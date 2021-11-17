@@ -102,12 +102,12 @@ public class M04 extends JFrame implements ActionListener {
     else if (e.getActionCommand().equalsIgnoreCase("decrease X position")) {
       glEventListener.decXPosition();
     }
-    else if (e.getActionCommand().equalsIgnoreCase("lowered arms")) {
-      glEventListener.loweredArms();
-    }
-    else if (e.getActionCommand().equalsIgnoreCase("raised arms")) {
-      glEventListener.raisedArms();
-    }
+//    else if (e.getActionCommand().equalsIgnoreCase("lowered arms")) {
+//      glEventListener.loweredArms();
+//    }
+//    else if (e.getActionCommand().equalsIgnoreCase("raised arms")) {
+//      glEventListener.raisedArms();
+//    }
     else if(e.getActionCommand().equalsIgnoreCase("quit"))
       System.exit(0);
   }

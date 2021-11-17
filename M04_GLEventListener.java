@@ -52,8 +52,6 @@ public class M04_GLEventListener implements GLEventListener {
         GL3 gl = drawable.getGL().getGL3();
         light.dispose(gl);
         floor.dispose(gl);
-//        cube.dispose(gl);
-//        cube2.dispose(gl);
     }
 
 
@@ -94,21 +92,21 @@ public class M04_GLEventListener implements GLEventListener {
         robotMoveTranslate.update();
     }
 
-    public void loweredArms() {
-        stopAnimation();
-        leftArmRotate.setTransform(Mat4Transform.rotateAroundX(180));
-        leftArmRotate.update();
-        rightArmRotate.setTransform(Mat4Transform.rotateAroundX(180));
-        rightArmRotate.update();
-    }
-
-    public void raisedArms() {
-        stopAnimation();
-        leftArmRotate.setTransform(Mat4Transform.rotateAroundX(0));
-        leftArmRotate.update();
-        rightArmRotate.setTransform(Mat4Transform.rotateAroundX(0));
-        rightArmRotate.update();
-    }
+//    public void loweredArms() {
+//        stopAnimation();
+//        leftArmRotate.setTransform(Mat4Transform.rotateAroundX(180));
+//        leftArmRotate.update();
+//        rightArmRotate.setTransform(Mat4Transform.rotateAroundX(180));
+//        rightArmRotate.update();
+//    }
+//
+//    public void raisedArms() {
+//        stopAnimation();
+//        leftArmRotate.setTransform(Mat4Transform.rotateAroundX(0));
+//        leftArmRotate.update();
+//        rightArmRotate.setTransform(Mat4Transform.rotateAroundX(0));
+//        rightArmRotate.update();
+//    }
 
     // ***************************************************
     /* THE SCENE
@@ -119,12 +117,12 @@ public class M04_GLEventListener implements GLEventListener {
     private Camera camera;
     private Mat4 perspective;
     private Model floor, wallBack, wallLeft, outside, standPhone, lightTop, standEgg, phone, egg, lightCase, lampTop,
-            lampMid, lampBtm, sphere, cube, cube2;
+            lampMid, lampBtm, sphere, sphereWhite, sphereBlack;
     private Light light;
     private SGNode robotRoot;
 
     private float xPosition = 0;
-    private TransformNode translateX, robotMoveTranslate, leftArmRotate, rightArmRotate;
+    private TransformNode rotateUpperLip, rotateLowerLip, robotMoveTranslate, leanForward, turnHead;
 
     private void initialise(GL3 gl) {
         createRandomNumbers();
@@ -135,8 +133,8 @@ public class M04_GLEventListener implements GLEventListener {
         int[] textureId3 = TextureLibrary.loadTexture(gl, "textures/phone.jpg");
         int[] textureId4 = TextureLibrary.loadTexture(gl, "textures/cloud.jpg");
         int[] textureId5 = TextureLibrary.loadTexture(gl, "textures/wall.jpg");
-        int[] textureId6 = TextureLibrary.loadTexture(gl, "textures/window.jpg");
-        int[] textureId7 = TextureLibrary.loadTexture(gl, "textures/cube.jpg");
+        int[] textureId6 = TextureLibrary.loadTexture(gl, "textures/black.jpg");
+        int[] textureId7 = TextureLibrary.loadTexture(gl, "textures/yellow.jpg");
         int[] textureId8 = TextureLibrary.loadTexture(gl, "textures/door.jpg");
         int[] textureId9 = TextureLibrary.loadTexture(gl, "textures/jade.jpg");
         int[] textureId10 = TextureLibrary.loadTexture(gl, "textures/white.jpg");
@@ -227,23 +225,20 @@ public class M04_GLEventListener implements GLEventListener {
         shader = new Shader(gl, "vs_cube_04.txt", "fs_cube_04.txt");
         material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 32.0f);
         modelMatrix = Mat4.multiply(Mat4Transform.scale(4,4,4), Mat4Transform.translate(0,0.5f,0));
-        sphere = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureId1, textureId2);
+        sphere = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureId7);
+        sphereWhite = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureId10);
+        sphereBlack = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureId6);
 
-        mesh = new Mesh(gl, Cube.vertices.clone(), Cube.indices.clone());
-        shader = new Shader(gl, "vs_cube_04.txt", "fs_cube_04.txt");
-        material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 32.0f);
-        modelMatrix = Mat4.multiply(Mat4Transform.scale(4,4,4), Mat4Transform.translate(0,0.5f,0));
-        cube = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureId3, textureId4);
-
-        cube2 = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureId5, textureId6);
 
         // robot
-
         float bodyX = 1f;
         float bodyY = 2f;
         float headScale = 1.5f;
+        float eyeScale = 0.4f;
+        float pupilScale = 0.2f;
         float neckScale = 0.3f;
         float legScale = 0.5f;
+        float mouthScale = 0.5f;
 
         robotRoot = new NameNode("root");
         robotMoveTranslate = new TransformNode("robot transform",Mat4Transform.translate(xPosition,0,0));
@@ -258,15 +253,49 @@ public class M04_GLEventListener implements GLEventListener {
 
         NameNode head = new NameNode("head");
         m = new Mat4(1);
-        m = Mat4.multiply(m, Mat4Transform.translate(0,bodyY+neckScale,0));
         m = Mat4.multiply(m, Mat4Transform.scale(headScale,headScale,headScale));
         m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0));
         TransformNode headTransform = new TransformNode("head transform", m);
         ModelNode headShape = new ModelNode("Sphere(head)", sphere);
 
+        NameNode eyeLeft = new NameNode("eyeLeft");
+        m = new Mat4(1);
+        m = Mat4.multiply(m, Mat4Transform.scale(eyeScale,eyeScale,eyeScale));
+        m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0));
+        TransformNode eyeLeftTransform = new TransformNode("eyeLeft transform", m);
+        ModelNode eyeLeftShape = new ModelNode("Sphere(eyeLeft)", sphereWhite);
+
+        NameNode eyeRight = new NameNode("eyeRight");
+        TransformNode eyeRightTransform = new TransformNode("eyeRight transform", m);
+        ModelNode eyeRightShape = new ModelNode("Sphere(eyeRight)", sphereWhite);
+
+        NameNode pupilLeft = new NameNode("pupilLeft");
+        m = new Mat4(1);
+        m = Mat4.multiply(m, Mat4Transform.scale(pupilScale,pupilScale,pupilScale));
+        m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0));
+        TransformNode pupilLeftTransform = new TransformNode("pupilLeft transform", m);
+        ModelNode pupilLeftShape = new ModelNode("Sphere(pupilLeft)", sphereBlack);
+
+        NameNode pupilRight = new NameNode("pupilRight");
+        TransformNode pupilRightTransform = new TransformNode("pupilRight transform", m);
+        ModelNode pupilRightShape = new ModelNode("Sphere(pupilRight)", sphereBlack);
+
+        NameNode upperMouth = new NameNode("upper mouth");
+        m = new Mat4(1);
+        m = Mat4.multiply(m, Mat4Transform.scale(mouthScale,mouthScale/3,mouthScale*3));
+        m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0));
+        TransformNode upperMouthTransform = new TransformNode("upperMouth transform", m);
+        ModelNode upperMouthShape = new ModelNode("Sphere(upperMouth)", sphereWhite);
+
+        NameNode lowerMouth = new NameNode("lower mouth");
+        m = new Mat4(1);
+        m = Mat4.multiply(m, Mat4Transform.scale(mouthScale,mouthScale/3,mouthScale*3));
+        m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0));
+        TransformNode lowerMouthTransform = new TransformNode("lowerMouth transform", m);
+        ModelNode lowerMouthShape = new ModelNode("Sphere(lowerMouth)", sphereWhite);
+
         NameNode neck = new NameNode("neck");
         m = new Mat4(1);
-        m = Mat4.multiply(m, Mat4Transform.translate(0,bodyY,0));
         m = Mat4.multiply(m, Mat4Transform.scale(neckScale,neckScale,neckScale));
         m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0));
         TransformNode neckTransform = new TransformNode("neck transform", m);
@@ -274,32 +303,92 @@ public class M04_GLEventListener implements GLEventListener {
 
         NameNode leg = new NameNode("leg");
         m = new Mat4(1);
-        m = Mat4.multiply(m, Mat4Transform.translate(0,0,0));
-        m = Mat4.multiply(m, Mat4Transform.rotateAroundX(180));
         m = Mat4.multiply(m, Mat4Transform.scale(legScale,legScale,legScale));
         m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0));
-        TransformNode rightlegTransform = new TransformNode("leg transform", m);
-        ModelNode rightLegShape = new ModelNode("Sphere(leg)", sphere);
+        TransformNode legTransform = new TransformNode("leg transform", m);
+        ModelNode legShape = new ModelNode("Sphere(leg)", sphere);
 
+        TransformNode translateOnTopBody
+                = new TransformNode("translate(0,bodyY,0)",Mat4Transform.translate(0,bodyY,0));
+
+        TransformNode translateOnTopNeck
+                = new TransformNode("translate(0,bodyY,0)",Mat4Transform.translate(0,bodyY + neckScale,0));
+
+        TransformNode translateRightEyeOnHead
+                = new TransformNode("translate(0,bodyY,0)",Mat4Transform.translate(0.2f,headScale/2 , headScale/2.5f));
+
+        TransformNode translateLeftEyeOnHead
+                = new TransformNode("translate(0,bodyY,0)",Mat4Transform.translate(-0.2f,headScale/2, headScale/2.5f));
+
+        TransformNode translateRightPupilOnEye
+                = new TransformNode("translate(0,bodyY,0)",Mat4Transform.translate(0,eyeScale/4 , 0.15f));
+
+        TransformNode translateLeftPupilOnEye
+                = new TransformNode("translate(0,bodyY,0)",Mat4Transform.translate(0,eyeScale/4 , 0.15f));
+
+        TransformNode translateMouth
+                = new TransformNode("translate(0,bodyY,0)",Mat4Transform.translate(0,headScale/2.5f, headScale/2));
+
+        TransformNode translateLegUnderBody
+                = new TransformNode("translate(0,bodyY,0)",Mat4Transform.translate(0,-bodyY/4, 0));
+
+        rotateUpperLip = new TransformNode("rotate upper lip", Mat4Transform.rotateAroundX(-10));
+
+        rotateLowerLip = new TransformNode("rotate upper lip", Mat4Transform.rotateAroundX(10));
+
+        leanForward = new TransformNode("lean forward",Mat4Transform.rotateAroundX(0));
+
+        turnHead = new TransformNode("lean forward",Mat4Transform.rotateAroundX(0));
 
         robotRoot.addChild(robotMoveTranslate);
             robotMoveTranslate.addChild(robotTranslate);
-                robotTranslate.addChild(body);
-                    body.addChild(bodyTransform);
-                        bodyTransform.addChild(bodyShape);
-                    body.addChild(head);
-                        head.addChild(headTransform);
-                            headTransform.addChild(headShape);
-                        head.addChild(neck);
-                            neck.addChild(neckTransform);
-                                neckTransform.addChild(neckShape);
-                    body.addChild(leg);
-                        leg.addChild(rightlegTransform);
-                            rightlegTransform.addChild(rightLegShape);
+                robotTranslate.addChild(leanForward);
+                    leanForward.addChild(body);
+                        body.addChild(bodyTransform);
+                            bodyTransform.addChild(bodyShape);
+                        body.addChild(translateOnTopBody);
+                            translateOnTopBody.addChild(neck);
+                                neck.addChild(neckTransform);
+                                    neckTransform.addChild(neckShape);
+                        body.addChild(translateOnTopNeck);
+                            translateOnTopNeck.addChild(turnHead);
+                                turnHead.addChild(head);
+                                    head.addChild(headTransform);
+                                        headTransform.addChild(headShape);
+                                    head.addChild(translateLeftEyeOnHead);
+                                            translateLeftEyeOnHead.addChild(eyeLeft);
+                                                eyeLeft.addChild(eyeLeftTransform);
+                                                    eyeLeftTransform.addChild(eyeLeftShape);
+                                                eyeLeft.addChild(pupilLeft);
+                                                    pupilLeft.addChild(translateLeftPupilOnEye);
+                                                        translateLeftPupilOnEye.addChild(pupilLeftTransform);
+                                                            pupilLeftTransform.addChild(pupilLeftShape);
+                                    head.addChild(translateRightEyeOnHead);
+                                        translateRightEyeOnHead.addChild(eyeRight);
+                                            eyeRight.addChild(eyeRightTransform);
+                                                eyeRightTransform.addChild(eyeRightShape);
+                                    eyeRight.addChild(pupilRight);
+                                        pupilRight.addChild(translateRightPupilOnEye);
+                                            translateRightPupilOnEye.addChild(pupilRightTransform);
+                                                pupilRightTransform.addChild(pupilRightShape);
+                                    head.addChild(upperMouth);
+                                        upperMouth.addChild(translateMouth);
+                                            translateMouth.addChild(rotateUpperLip);
+                                                rotateUpperLip.addChild(upperMouthTransform);
+                                                        upperMouthTransform.addChild(upperMouthShape);
+                                    head.addChild(lowerMouth);
+                                        lowerMouth.addChild(translateMouth);
+                                            translateMouth.addChild(rotateLowerLip);
+                                                rotateLowerLip.addChild(lowerMouthTransform);
+                                                    lowerMouthTransform.addChild(lowerMouthShape);
+                robotTranslate.addChild(leg);
+                    leg.addChild(translateLegUnderBody);
+                        translateLegUnderBody.addChild(legTransform);
+                            legTransform.addChild(legShape);
 
         robotRoot.update();  // IMPORTANT - don't forget this
-        //robotRoot.print(0, false);
-        //System.exit(0);
+//        robotRoot.print(0, false);
+//        System.exit(0);
     }
 
     private void render(GL3 gl) {
@@ -335,15 +424,26 @@ public class M04_GLEventListener implements GLEventListener {
         lampMid.render(gl);
         lampBtm.render(gl);
 
-        if (animation) updateLeftArm();
+        updateMouth();
+//        if (animation) updateLeftArm();
+//        updateLeftArm();
         robotRoot.draw(gl);
     }
 
     private void updateLeftArm() {
-        double elapsedTime = getSeconds() - startTime;
-        float rotateAngle = 180f + 90f * (float) Math.sin(elapsedTime);
-        leftArmRotate.setTransform(Mat4Transform.rotateAroundX(rotateAngle));
-        leftArmRotate.update();
+        double elapsedTime = getSeconds()-startTime;
+        float rotateAngle = (float)Math.sin(elapsedTime);
+        robotMoveTranslate.setTransform(Mat4Transform.rotateAroundX(rotateAngle));
+        robotMoveTranslate.update();
+    }
+
+    private void updateMouth() {
+        double elapsedTime = getSeconds()-startTime;
+        float rotateAngle = 10f * (float)Math.sin(elapsedTime);
+        rotateUpperLip.setTransform(Mat4Transform.rotateAroundX(rotateAngle));
+        rotateUpperLip.update();
+        rotateLowerLip.setTransform(Mat4Transform.rotateAroundX(-rotateAngle));
+        rotateLowerLip.update();
     }
 
     // The light's postion is continually being changed, so needs to be calculated for each frame.
