@@ -49,10 +49,7 @@ public class M04 extends JFrame implements ActionListener {
       b = new JButton("camera Z");
       b.addActionListener(this);
       p.add(b);
-      b = new JButton("start");
-      b.addActionListener(this);
-      p.add(b);
-      b = new JButton("stop");
+      b = new JButton("animate face");
       b.addActionListener(this);
       p.add(b);
       b = new JButton("increase X position");
@@ -90,11 +87,8 @@ public class M04 extends JFrame implements ActionListener {
       camera.setCamera(Camera.CameraType.Z);
       canvas.requestFocusInWindow();
     }
-    else if (e.getActionCommand().equalsIgnoreCase("start")) {
-      glEventListener.startAnimation();
-    }
-    else if (e.getActionCommand().equalsIgnoreCase("stop")) {
-      glEventListener.stopAnimation();
+    else if (e.getActionCommand().equalsIgnoreCase("animate face")) {
+      glEventListener.startFace();
     }
     else if (e.getActionCommand().equalsIgnoreCase("increase X position")) {
       glEventListener.incXPosition();
