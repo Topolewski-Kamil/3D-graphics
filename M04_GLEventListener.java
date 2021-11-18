@@ -1,24 +1,22 @@
 import gmaths.*;
-
 import com.jogamp.opengl.*;
-
 import java.time.LocalTime;
 
-public class M04_GLEventListener implements GLEventListener {
 
-    private static final boolean DISPLAY_SHADERS = false;
+/**
+ * @author Dr Steve Maddock
+ */
+public class M04_GLEventListener implements GLEventListener {
 
     public M04_GLEventListener(Camera camera) {
         this.camera = camera;
         this.camera.setPosition(new Vec3(4f, 12f, 18f));
     }
 
-    // ***************************************************
-    /*
-     * METHODS DEFINED BY GLEventListener
+    /**
+     * Initialization
+     * @author Dr Steve Maddock
      */
-
-    /* Initialisation */
     public void init(GLAutoDrawable drawable) {
         GL3 gl = drawable.getGL().getGL3();
         System.err.println("Chosen GLCapabilities: " + drawable.getChosenGLCapabilities());
@@ -33,7 +31,10 @@ public class M04_GLEventListener implements GLEventListener {
         startTime = getSeconds();
     }
 
-    /* Called to indicate the drawing surface has been moved and/or resized  */
+    /**
+     * Called to indicate the drawing surface has been moved and/or resized
+     * @author Dr Steve Maddock
+     */
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
         GL3 gl = drawable.getGL().getGL3();
         gl.glViewport(x, y, width, height);
@@ -41,7 +42,10 @@ public class M04_GLEventListener implements GLEventListener {
         camera.setPerspectiveMatrix(Mat4Transform.perspective(45, aspect));
     }
 
-    /* Draw */
+    /**
+     * Draw
+     * @author Dr Steve Maddock
+     */
     public void display(GLAutoDrawable drawable) {
         GL3 gl = drawable.getGL().getGL3();
         render(gl);
@@ -52,20 +56,30 @@ public class M04_GLEventListener implements GLEventListener {
         GL3 gl = drawable.getGL().getGL3();
         swingingLight.dispose(gl);
         floor.dispose(gl);
+        generalLight1.dispose(gl);
+        generalLight2.dispose(gl);
+        wallBack.dispose(gl);
+        wallLeft.dispose(gl);
+        outside.dispose(gl);
+        standPhone.dispose(gl);
+        lightTop.dispose(gl);
+        wallLeft.dispose(gl);
+        standEgg.dispose(gl);
+        mobilePhone.dispose(gl);
+        egg.dispose(gl);
+        lightCase.dispose(gl);
+        lampTop.dispose(gl);
+        lampMid.dispose(gl);
+        lampBtm.dispose(gl);
+        sphereYellow.dispose(gl);
+        sphereWhite.dispose(gl);
+        sphereBlack.dispose(gl);
+        sphereOrange.dispose(gl);
     }
 
-
-    // ***************************************************
-    /* INTERACTION
-     *
-     *
-     */
-
-
-
     private boolean faceAnimation, light1on, light2on, spotLight;
-    private double savedTime = 0;
 
+    /* ON/OFF methods for lights and animations */
     public void changeFaceAnimation() {
         this.faceAnimation = !faceAnimation;
     }
@@ -82,39 +96,6 @@ public class M04_GLEventListener implements GLEventListener {
         this.spotLight = !spotLight;
     }
 
-    public void incXPosition() {
-        xPosition += 0.5f;
-        if (xPosition > 5f) xPosition = 5f;
-        updateMove();
-    }
-
-    public void decXPosition() {
-        xPosition -= 0.5f;
-        if (xPosition < -5f) xPosition = -5f;
-        updateMove();
-    }
-
-    private void updateMove() {
-        robotMoveTranslate.setTransform(Mat4Transform.translate(xPosition, 0, 0));
-        robotMoveTranslate.update();
-    }
-
-//    public void loweredArms() {
-//        stopAnimation();
-//        leftArmRotate.setTransform(Mat4Transform.rotateAroundX(180));
-//        leftArmRotate.update();
-//        rightArmRotate.setTransform(Mat4Transform.rotateAroundX(180));
-//        rightArmRotate.update();
-//    }
-//
-//    public void raisedArms() {
-//        stopAnimation();
-//        leftArmRotate.setTransform(Mat4Transform.rotateAroundX(0));
-//        leftArmRotate.update();
-//        rightArmRotate.setTransform(Mat4Transform.rotateAroundX(0));
-//        rightArmRotate.update();
-//    }
-
     // ***************************************************
     /* THE SCENE
      * Now define all the methods to handle the scene.
@@ -122,9 +103,8 @@ public class M04_GLEventListener implements GLEventListener {
      */
 
     private Camera camera;
-    private Mat4 perspective;
-    private Model floor, wallBack, wallLeft, outside, standPhone, lightTop, standEgg, phone, egg, lightCase, lampTop,
-            lampMid, lampBtm, sphere, sphereWhite, sphereBlack,sphereOrange;
+    private Model floor, wallBack, wallLeft, outside, standPhone, lightTop, standEgg, mobilePhone, egg, lightCase, lampTop,
+            lampMid, lampBtm, sphereYellow, sphereWhite, sphereBlack,sphereOrange;
     private Light swingingLight, generalLight1, generalLight2;
     private SGNode robotRoot;
 
@@ -133,25 +113,20 @@ public class M04_GLEventListener implements GLEventListener {
 
     private void initialise(GL3 gl) {
         createRandomNumbers();
-        double elapsedTime = getSeconds() - startTime;
-        int[] textureId0 = TextureLibrary.loadTexture(gl, "textures/wood.jpg");
-        int[] textureId1 = TextureLibrary.loadTexture(gl, "textures/container2.jpg");
-        int[] textureId2 = TextureLibrary.loadTexture(gl, "textures/container2_specular.jpg");
-        int[] textureId3 = TextureLibrary.loadTexture(gl, "textures/phone.jpg");
-        int[] textureId4 = TextureLibrary.loadTexture(gl, "textures/cloud.jpg");
-        int[] textureId5 = TextureLibrary.loadTexture(gl, "textures/wall.jpg");
-        int[] textureId6 = TextureLibrary.loadTexture(gl, "textures/black.jpg");
-        int[] textureId7 = TextureLibrary.loadTexture(gl, "textures/yellow.jpg");
-        int[] textureId8 = TextureLibrary.loadTexture(gl, "textures/door.jpg");
-        int[] textureId9 = TextureLibrary.loadTexture(gl, "textures/jade.jpg");
-        int[] textureId10 = TextureLibrary.loadTexture(gl, "textures/white.jpg");
-        int[] textureId11 = TextureLibrary.loadTexture(gl, "textures/moon.jpg");
-        int[] textureId12 = TextureLibrary.loadTexture(gl, "textures/test1.jpg");
-        int[] textureId13 = TextureLibrary.loadTexture(gl, "textures/test2.jpg");
-        int[] textureId14 = TextureLibrary.loadTexture(gl, "textures/orange.jpg");
-
-
-
+        int[] floorWood = TextureLibrary.loadTexture(gl, "textures/wood.jpg");
+        int[] woodBox = TextureLibrary.loadTexture(gl, "textures/container2.jpg");
+        int[] woodBoxSpecular = TextureLibrary.loadTexture(gl, "textures/container2_specular.jpg");
+        int[] phoneScreen = TextureLibrary.loadTexture(gl, "textures/phone.jpg");
+        int[] clouds = TextureLibrary.loadTexture(gl, "textures/cloud.jpg");
+        int[] wallWhite = TextureLibrary.loadTexture(gl, "textures/wall.jpg");
+        int[] black = TextureLibrary.loadTexture(gl, "textures/black.jpg");
+        int[] yellow = TextureLibrary.loadTexture(gl, "textures/yellow.jpg");
+        int[] wallWithDoor = TextureLibrary.loadTexture(gl, "textures/door.jpg");
+        int[] orange = TextureLibrary.loadTexture(gl, "textures/orange.jpg");
+        int[] white = TextureLibrary.loadTexture(gl, "textures/white.jpg");
+        int[] moon = TextureLibrary.loadTexture(gl, "textures/moon.jpg");
+        int[] eggBlue = TextureLibrary.loadTexture(gl, "textures/test1.jpg");
+        int[] eggBlueSpecular = TextureLibrary.loadTexture(gl, "textures/test2.jpg");
 
         swingingLight = new Light(gl);
         swingingLight.setCamera(camera);
@@ -162,103 +137,91 @@ public class M04_GLEventListener implements GLEventListener {
         generalLight2 = new Light(gl);
         generalLight2.setCamera(camera);
 
-        // copper yellow
-//        material = new Material(new Vec3(0.19125f,	0.0735f,	0.0225f), new Vec3(0.7038f,	0.27048f,	0.0828f), new Vec3(0.256777f,	0.137622f,	0.086014f), 0.778125f);
-        // white rubber
-//        material = new Material(new Vec3(0.05f,0.05f,0.05f), new Vec3(0.5f,0.5f,0.5f), new Vec3(0.7f,0.7f,0.7f), 10);
-        // polished bronze
-//        material = new Material(new Vec3(0.25f, 0.148f, 0.06475f), new Vec3(0.4f, 0.2368f, 0.1036f), new Vec3(0.774597f, 0.458561f, 0.200621f), 76.8f);
+        Mat4 modelMatrix;
+        Mat4 initTranslate = Mat4Transform.translate(0, 0.5f, 0);
+
+        Material shiny = new Material(new Vec3(1.0f, 1.0f, 1.0f), new Vec3(1.0f, 1.0f, 1.0f), new Vec3(1.0f, 1.0f, 1.0f), 32.0f);
+        Material whiteRubber = new Material(new Vec3(0.8f, 0.8f, 0.8f), new Vec3(0.5f, 0.5f, 0.5f), new Vec3(0.7f, 0.7f, 0.7f), 0.778125f);
+        Material polishedBronze = new Material(new Vec3(0.25f, 0.148f, 0.06475f), new Vec3(0.4f, 0.2368f, 0.1036f), new Vec3(0.774597f, 0.458561f, 0.200621f), 76.8f);
+        Material yellowCopper = new Material(new Vec3(0.19125f, 0.0735f, 0.0225f), new Vec3(0.7038f, 0.27048f, 0.0828f), new Vec3(0.256777f, 0.137622f, 0.086014f), 0.778125f);
+        Material matt = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 32.0f);
+
+        Mesh twoTriangles = new Mesh(gl, TwoTriangles.vertices.clone(), TwoTriangles.indices.clone());
+        Mesh cube = new Mesh(gl, Cube.vertices.clone(), Cube.indices.clone());
+        Mesh phone = new Mesh(gl, Phone.vertices.clone(), Phone.indices.clone());
+        Mesh sphere = new Mesh(gl, Sphere.vertices.clone(), Sphere.indices.clone());
+
+        Shader floorShader = new Shader(gl, "vs_tt_05.txt", "fs_floor.txt");
+        Shader wallShader = new Shader(gl, "vs_tt_05.txt", "fs_wall.txt");
+        Shader shaderCube = new Shader(gl, "vs_cube_04.txt", "fs_cube_04.txt");
 
         // floor
-        Mesh mesh = new Mesh(gl, TwoTriangles.vertices.clone(), TwoTriangles.indices.clone());
-        Shader shader = new Shader(gl, "vs_tt_05.txt", "fs_floor.txt");
-        Material material = new Material(new Vec3(1.0f, 1.0f, 1.0f), new Vec3(1.0f, 1.0f, 1.0f), new Vec3(1.0f, 1.0f, 1.0f), 32.0f);
-        Mat4 modelMatrix = Mat4Transform.scale(18, 1f, 18);
-        floor = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shader, material, modelMatrix, mesh, textureId0);
+        modelMatrix = Mat4Transform.scale(18, 1f, 18);
+        floor = new Model(gl, camera, swingingLight, generalLight1, generalLight2, floorShader, shiny, modelMatrix, twoTriangles, floorWood);
 
         // wall back
-        shader = new Shader(gl, "vs_tt_05.txt", "fs_wall.txt");
-        material = new Material(new Vec3(0.8f, 0.8f, 0.8f), new Vec3(0.5f, 0.5f, 0.5f), new Vec3(0.7f, 0.7f, 0.7f), 0.778125f);
-        wallBack = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shader, material, modelMatrix, mesh, textureId8);
+        wallBack = new Model(gl, camera, swingingLight, generalLight1, generalLight2, wallShader, whiteRubber, modelMatrix, twoTriangles, wallWithDoor);
         wallBack.setModelMatrix(getMforBackWall());
 
         // wall left
-        wallLeft = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shader, material, modelMatrix, mesh, textureId5);
+        wallLeft = new Model(gl, camera, swingingLight, generalLight1, generalLight2, wallShader, whiteRubber, modelMatrix, twoTriangles, wallWhite);
 
         // outside
         LocalTime now = LocalTime.now();
-        if (now.isBefore(LocalTime.parse("08:00")) || now.isAfter(LocalTime.parse("20:00"))) {
-            outside = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shader, material, modelMatrix, mesh, textureId11);
-        } else {
-            outside = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shader, material, modelMatrix, mesh, textureId4);
-        }
+        if (now.isBefore(LocalTime.parse("08:00")) || now.isAfter(LocalTime.parse("20:00")))
+            outside = new Model(gl, camera, swingingLight, generalLight1, generalLight2, wallShader, shiny, modelMatrix, twoTriangles, moon);
+        else
+            outside = new Model(gl, camera, swingingLight, generalLight1, generalLight2, wallShader, shiny, modelMatrix, twoTriangles, clouds);
         outside.setModelMatrix(getMforOutside());
 
         // stand phone
-        mesh = new Mesh(gl, Cube.vertices.clone(), Cube.indices.clone());
-        shader = new Shader(gl, "vs_cube_04.txt", "fs_cube_04.txt");
-        material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 32.0f);
-        modelMatrix = Mat4.multiply(Mat4Transform.scale(3, 1, 3), Mat4Transform.translate(0, 0.5f, 0));
+        modelMatrix = Mat4.multiply(Mat4Transform.scale(3, 1, 3), initTranslate);
         modelMatrix = Mat4.multiply(Mat4Transform.translate(5, 0, -5), modelMatrix);
-        standPhone = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shader, material, modelMatrix, mesh, textureId1, textureId2);
+        standPhone = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, matt, modelMatrix, cube, woodBox, woodBoxSpecular);
 
         // stand egg
-        modelMatrix = Mat4.multiply(Mat4Transform.scale(3, 1, 3), Mat4Transform.translate(0, 0.5f, 0));
-        standEgg = new Model(gl, camera, swingingLight, generalLight1, generalLight2,shader, material, modelMatrix, mesh, textureId1,textureId2);
+        modelMatrix = Mat4.multiply(Mat4Transform.scale(3, 1, 3), initTranslate);
+        standEgg = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, matt, modelMatrix, cube, woodBox, woodBoxSpecular);
 
         // mobile phone
-        mesh = new Mesh(gl, Phone.vertices.clone(), Phone.indices.clone());
-        material = new Material(new Vec3(1.0f, 1.0f, 1.0f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 32.0f);
-        modelMatrix = Mat4.multiply(Mat4Transform.scale(2, 4, 0.5f),
-                Mat4Transform.translate(0, 0.5f, 0));
+        modelMatrix = Mat4.multiply(Mat4Transform.scale(2, 4, 0.5f), initTranslate);
         modelMatrix = Mat4.multiply(Mat4Transform.translate(5, 1, -5), modelMatrix);
-        phone = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shader, material, modelMatrix, mesh, textureId3);
+        mobilePhone = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, shiny, modelMatrix, phone, phoneScreen);
 
         // egg
-        mesh = new Mesh(gl, Sphere.vertices.clone(), Sphere.indices.clone());
-        shader = new Shader(gl, "vs_cube_04.txt", "fs_cube_04.txt");
-        material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 32.0f);
-        modelMatrix = Mat4.multiply(Mat4Transform.scale(2, 4, 2), Mat4Transform.translate(0, 0.5f, 0));
+        modelMatrix = Mat4.multiply(Mat4Transform.scale(2, 4, 2), initTranslate);
         modelMatrix = Mat4.multiply(Mat4Transform.translate(0, 1, 0), modelMatrix);
-        egg = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shader, material, modelMatrix, mesh, textureId12,textureId13);
+        egg = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, matt, modelMatrix, sphere, eggBlue,eggBlueSpecular);
 
         // light bulb
-        material = new Material(new Vec3(0.5f, 0.5f, 0.5f), new Vec3(0.8f, 0.8f, 0.8f), new Vec3(0.8f, 0.8f, 0.8f), 32.0f);
-        lightTop = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shader, material, modelMatrix, mesh, textureId10);
+        lightTop = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, shiny, modelMatrix, sphere, white);
 
         //light square
-        mesh = new Mesh(gl, Cube.vertices.clone(), Cube.indices.clone());
-        shader = new Shader(gl, "vs_cube_04.txt", "fs_cube_04.txt");
-        material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 32.0f);
-        lightCase = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shader, material, modelMatrix, mesh, textureId1);
+        lightCase = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, matt, modelMatrix, cube, woodBox, woodBoxSpecular);
 
         //light stand top
-        material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 32.0f);
-        modelMatrix = Mat4.multiply(Mat4Transform.scale(0.37f, 0.2f, 3), Mat4Transform.translate(0, 0.5f, 0));
+        modelMatrix = Mat4.multiply(Mat4Transform.scale(0.37f, 0.2f, 3), initTranslate);
         modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundY(90), modelMatrix);
         modelMatrix = Mat4.multiply(Mat4Transform.translate(6.69f, 4.9f, 0), modelMatrix);
-        lampTop = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shader, material, modelMatrix, mesh, textureId1);
+        lampTop = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, matt, modelMatrix, cube, woodBox, woodBoxSpecular);
 
         //light stand middle
-        modelMatrix = Mat4.multiply(Mat4Transform.scale(0.25f, 5, 0.25f), Mat4Transform.translate(0, 0.5f, 0));
+        modelMatrix = Mat4.multiply(Mat4Transform.scale(0.25f, 5, 0.25f), initTranslate);
         modelMatrix = Mat4.multiply(Mat4Transform.translate(8f, 0, 0), modelMatrix);
-        lampMid = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shader, material, modelMatrix, mesh, textureId1);
+        lampMid = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, matt, modelMatrix, cube, woodBox, woodBoxSpecular);
 
         //light stand bottom
-        modelMatrix = Mat4.multiply(Mat4Transform.scale(0.5f, 0.15f, 0.5f), Mat4Transform.translate(0, 0.5f, 0));
+        modelMatrix = Mat4.multiply(Mat4Transform.scale(0.5f, 0.15f, 0.5f), initTranslate);
         modelMatrix = Mat4.multiply(Mat4Transform.translate(8, 0, 0), modelMatrix);
-        lampBtm = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shader, material, modelMatrix, mesh, textureId1);
+        lampBtm = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, matt, modelMatrix, cube, woodBox, woodBoxSpecular);
 
-        mesh = new Mesh(gl, Sphere.vertices.clone(), Sphere.indices.clone());
-        shader = new Shader(gl, "vs_cube_04.txt", "fs_cube_04.txt");
-        material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 32.0f);
-        modelMatrix = Mat4.multiply(Mat4Transform.scale(4,4,4), Mat4Transform.translate(0,0.5f,0));
-        sphere = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shader, material, modelMatrix, mesh, textureId7);
-        sphereWhite = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shader, material, modelMatrix, mesh, textureId10);
-        sphereBlack = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shader, material, modelMatrix, mesh, textureId6);
-        sphereOrange = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shader, material, modelMatrix, mesh, textureId14);
 
-        // robot
+        /* robot */
+        sphereYellow = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, matt, null, sphere, yellow);
+        sphereWhite = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, matt, null, sphere, white);
+        sphereBlack = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, matt, null, sphere, black);
+        sphereOrange = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, matt, null, sphere, orange);
+
         float bodyX = 1f;
         float bodyY = 2f;
         float headScale = 1.5f;
@@ -271,25 +234,21 @@ public class M04_GLEventListener implements GLEventListener {
         robotRoot = new NameNode("root");
         robotMoveTranslate = new TransformNode("robot transform",Mat4Transform.translate(xPosition,0,0));
 
-        TransformNode robotTranslate = new TransformNode("robot transform",Mat4Transform.translate(-4,legScale,0));
+        // init robot position
+        TransformNode robotTranslate = new TransformNode("robot transform",Mat4Transform.translate(-4, legScale,0));
 
         NameNode body = new NameNode("body");
-        Mat4 m = Mat4Transform.scale(bodyX,bodyY,bodyX);
-        m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0));
+        Mat4 m = Mat4.multiply(Mat4Transform.scale(bodyX,bodyY,bodyX), initTranslate);
         TransformNode bodyTransform = new TransformNode("body transform", m);
-        ModelNode bodyShape = new ModelNode("Sphere(body)", sphere);
+        ModelNode bodyShape = new ModelNode("Sphere(body)", sphereYellow);
 
         NameNode head = new NameNode("head");
-        m = new Mat4(1);
-        m = Mat4.multiply(m, Mat4Transform.scale(headScale,headScale,headScale));
-        m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0));
+        m = Mat4.multiply(Mat4Transform.scale(headScale,headScale,headScale),initTranslate);
         TransformNode headTransform = new TransformNode("head transform", m);
-        ModelNode headShape = new ModelNode("Sphere(head)", sphere);
+        ModelNode headShape = new ModelNode("Sphere(head)", sphereYellow);
 
         NameNode eyeLeft = new NameNode("eyeLeft");
-        m = new Mat4(1);
-        m = Mat4.multiply(m, Mat4Transform.scale(eyeScale,eyeScale,eyeScale));
-        m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0));
+        m = Mat4.multiply(Mat4Transform.scale(eyeScale,eyeScale,eyeScale),initTranslate);
         TransformNode eyeLeftTransform = new TransformNode("eyeLeft transform", m);
         ModelNode eyeLeftShape = new ModelNode("Sphere(eyeLeft)", sphereWhite);
 
@@ -298,9 +257,7 @@ public class M04_GLEventListener implements GLEventListener {
         ModelNode eyeRightShape = new ModelNode("Sphere(eyeRight)", sphereWhite);
 
         NameNode pupilLeft = new NameNode("pupilLeft");
-        m = new Mat4(1);
-        m = Mat4.multiply(m, Mat4Transform.scale(pupilScale,pupilScale,pupilScale));
-        m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0));
+        m = Mat4.multiply(Mat4Transform.scale(pupilScale,pupilScale,pupilScale), initTranslate);
         TransformNode pupilLeftTransform = new TransformNode("pupilLeft transform", m);
         ModelNode pupilLeftShape = new ModelNode("Sphere(pupilLeft)", sphereBlack);
 
@@ -309,32 +266,24 @@ public class M04_GLEventListener implements GLEventListener {
         ModelNode pupilRightShape = new ModelNode("Sphere(pupilRight)", sphereBlack);
 
         NameNode upperMouth = new NameNode("upper mouth");
-        m = new Mat4(1);
-        m = Mat4.multiply(m, Mat4Transform.scale(mouthScale,mouthScale/3,mouthScale*3));
-        m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0));
+        m = Mat4.multiply(Mat4Transform.scale(mouthScale,mouthScale/3,mouthScale*3), initTranslate);
         TransformNode upperMouthTransform = new TransformNode("upperMouth transform", m);
         ModelNode upperMouthShape = new ModelNode("Sphere(upperMouth)", sphereOrange);
 
         NameNode lowerMouth = new NameNode("lower mouth");
-        m = new Mat4(1);
-        m = Mat4.multiply(m, Mat4Transform.scale(mouthScale,mouthScale/3,mouthScale*3));
-        m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0));
+        m = Mat4.multiply(Mat4Transform.scale(mouthScale,mouthScale/3,mouthScale*3), initTranslate);
         TransformNode lowerMouthTransform = new TransformNode("lowerMouth transform", m);
         ModelNode lowerMouthShape = new ModelNode("Sphere(lowerMouth)", sphereOrange);
 
         NameNode neck = new NameNode("neck");
-        m = new Mat4(1);
-        m = Mat4.multiply(m, Mat4Transform.scale(neckScale,neckScale,neckScale));
-        m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0));
+        m = Mat4.multiply(Mat4Transform.scale(neckScale,neckScale,neckScale), initTranslate);
         TransformNode neckTransform = new TransformNode("neck transform", m);
-        ModelNode neckShape = new ModelNode("Sphere(neck)", sphere);
+        ModelNode neckShape = new ModelNode("Sphere(neck)", sphereYellow);
 
         NameNode leg = new NameNode("leg");
-        m = new Mat4(1);
-        m = Mat4.multiply(m, Mat4Transform.scale(legScale,legScale,legScale));
-        m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0));
+        m = Mat4.multiply(Mat4Transform.scale(legScale,legScale,legScale), initTranslate);
         TransformNode legTransform = new TransformNode("leg transform", m);
-        ModelNode legShape = new ModelNode("Sphere(leg)", sphere);
+        ModelNode legShape = new ModelNode("Sphere(leg)", sphereYellow);
 
         TransformNode translateOnTopBody
                 = new TransformNode("translate(0,bodyY,0)",Mat4Transform.translate(0,bodyY,0));
@@ -436,20 +385,16 @@ public class M04_GLEventListener implements GLEventListener {
                 }
             }
         }
-        outside.render(gl);
 
+        outside.render(gl);
         standEgg.render(gl);
         egg.render(gl);
-
         standPhone.render(gl);
-        phone.render(gl);
-
+        mobilePhone.render(gl);
         lightTop.render(gl);
         lightTop.setModelMatrix(getMforLamp());
-
         lightCase.render(gl);
         lightCase.setModelMatrix(getMforLampCase());
-
         lampTop.render(gl);
         lampMid.render(gl);
         lampBtm.render(gl);
