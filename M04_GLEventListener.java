@@ -470,7 +470,7 @@ public class M04_GLEventListener implements GLEventListener {
 
     // The light's postion is continually being changed, so needs to be calculated for each frame.
     private Vec3 getLightPosition2() {
-        return new Vec3(8, 2, 8);
+        return new Vec3(-8, 2, -8);
 //        return new Vec3(5f,3.4f,5f);
     }
 

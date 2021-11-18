@@ -56,10 +56,10 @@ public class Model {
     shader.setVec3(gl, "light.diffuse", light.getMaterial().getDiffuse());
     shader.setVec3(gl, "light.specular", light.getMaterial().getSpecular());
 
-//    shader.setVec3(gl, "light2.position", light2.getPosition());
-//    shader.setVec3(gl, "light2.ambient", light2.getMaterial().getAmbient());
-//    shader.setVec3(gl, "light2.diffuse", light2.getMaterial().getDiffuse());
-//    shader.setVec3(gl, "light2.specular", light2.getMaterial().getSpecular());
+    shader.setVec3(gl, "light2.position", light2.getPosition());
+    shader.setVec3(gl, "light2.ambient", light2.getMaterial().getAmbient());
+    shader.setVec3(gl, "light2.diffuse", light2.getMaterial().getDiffuse());
+    shader.setVec3(gl, "light2.specular", light2.getMaterial().getSpecular());
 
     shader.setVec3(gl, "material.ambient", material.getAmbient());
     shader.setVec3(gl, "material.diffuse", material.getDiffuse());
