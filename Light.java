@@ -13,9 +13,7 @@ public class Light {
     
   public Light(GL3 gl) {
     material = new Material();
-    material.setAmbient(0.5f, 0.5f, 0.5f);
-    material.setDiffuse(0.8f, 0.8f, 0.8f);
-    material.setSpecular(0.8f, 0.8f, 0.8f);
+    switchOnLight();
     position = new Vec3(3f,2f,1f);
     model = new Mat4(1);
     shader = new Shader(gl, "vs_light_01.txt", "fs_light_01.txt");
@@ -48,6 +46,18 @@ public class Light {
   
   public void setCamera(Camera camera) {
     this.camera = camera;
+  }
+
+  public void switchOffLight(){
+    material.setAmbient(0,0,0);
+    material.setDiffuse(0,0,0);
+    material.setSpecular(0,0,0);
+  }
+
+  public void switchOnLight(){
+    material.setAmbient(0.1f, 0.1f, 0.1f);
+    material.setDiffuse(0.3f, 0.3f, 0.3f);
+    material.setSpecular(0.5f, 0.5f, 0.5f);
   }
   
   public void render(GL3 gl) {

@@ -61,11 +61,25 @@ public class M04_GLEventListener implements GLEventListener {
      *
      */
 
-    private boolean faceAnimation = false;
+
+
+    private boolean faceAnimation, light1on, light2on, spotLight;
     private double savedTime = 0;
 
-    public void startFace() {
-        faceAnimation = true;
+    public void changeFaceAnimation() {
+        this.faceAnimation = !faceAnimation;
+    }
+
+    public void changeLight1() {
+        this.light1on = !light1on;
+    }
+
+    public void changeLight2() {
+        this.light2on = !light2on;
+    }
+
+    public void changeSpotLight() {
+        this.spotLight = !spotLight;
     }
 
     public void incXPosition() {
@@ -131,6 +145,7 @@ public class M04_GLEventListener implements GLEventListener {
         int[] textureId8 = TextureLibrary.loadTexture(gl, "textures/door.jpg");
         int[] textureId9 = TextureLibrary.loadTexture(gl, "textures/jade.jpg");
         int[] textureId10 = TextureLibrary.loadTexture(gl, "textures/white.jpg");
+        int[] textureId11 = TextureLibrary.loadTexture(gl, "textures/moon.jpg");
 
         swingingLight = new Light(gl);
         swingingLight.setCamera(camera);
@@ -159,7 +174,7 @@ public class M04_GLEventListener implements GLEventListener {
         // outside
         LocalTime now = LocalTime.now();
         if (now.isBefore(LocalTime.parse("08:00")) || now.isAfter(LocalTime.parse("20:00"))) {
-            outside = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shader, material, modelMatrix, mesh, textureId4);
+            outside = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shader, material, modelMatrix, mesh, textureId11);
         } else {
             outside = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shader, material, modelMatrix, mesh, textureId4);
         }
@@ -392,9 +407,7 @@ public class M04_GLEventListener implements GLEventListener {
         gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
         swingingLight.setPosition(getSwingLightPosition());  // changing light position each frame
         generalLight1.setPosition(getGeneralLightPosition1());  // changing light position each frame
-        generalLight1.render(gl);
         generalLight2.setPosition(getGeneralLightPosition2());  // changing light position each frame
-        generalLight2.render(gl);
 
 
         floor.render(gl);
@@ -429,6 +442,16 @@ public class M04_GLEventListener implements GLEventListener {
             updateMouth();
             updatePupils();
         }
+
+        if (light1on) generalLight1.switchOffLight();
+        else generalLight1.switchOnLight();
+
+        if (light2on) generalLight2.switchOffLight();
+        else generalLight2.switchOnLight();
+
+        if (spotLight) swingingLight.switchOffLight();
+        else swingingLight.switchOnLight();
+
         robotRoot.draw(gl);
     }
 
@@ -466,20 +489,16 @@ public class M04_GLEventListener implements GLEventListener {
         float y = 0.5f * (float) (Math.sin(elapsedTime));
         float z = 2 * (float) (Math.sin(elapsedTime));
         return new Vec3(x, Math.abs(y) + 3.5f, -z);
-//        return new Vec3(5f,3.4f,5f);
     }
 
-    // The light's postion is continually being changed, so needs to be calculated for each frame.
     private Vec3 getGeneralLightPosition1() {
-        return new Vec3(-8, 25, -8);
-//        return new Vec3(5f,3.4f,5f);
+        return new Vec3(-6, 10, -6);
     }
 
-    // The light's postion is continually being changed, so needs to be calculated for each frame.
     private Vec3 getGeneralLightPosition2() {
-        return new Vec3(8, 25, 8);
-//        return new Vec3(5f,3.4f,5f);
+        return new Vec3(6, 10, 6);
     }
+
     // As the transforms do not change over time for this object, they could be stored once rather than continually being calculated
     private Mat4 getMforBackWall() {
         float sizeX = 18f;
@@ -545,6 +564,8 @@ public class M04_GLEventListener implements GLEventListener {
         modelMatrix = Mat4.multiply(Mat4Transform.translate(5f, 5.1f, 0), modelMatrix);
         return modelMatrix;
     }
+
+
 
 
     // ***************************************************
