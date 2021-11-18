@@ -129,7 +129,7 @@ public class M04_GLEventListener implements GLEventListener {
     private SGNode robotRoot;
 
     private float xPosition = 0;
-    private TransformNode rotateUpperLip, rotateLowerLip, robotMoveTranslate, leanForward, turnHead, translateRightPupilOnEye, translateLeftPupilOnEye;
+    private TransformNode rotateUpperLip, rotateLowerLip, robotMoveTranslate, leanBody, turnHead, translateRightPupilOnEye, translateLeftPupilOnEye;
 
     private void initialise(GL3 gl) {
         createRandomNumbers();
@@ -146,6 +146,10 @@ public class M04_GLEventListener implements GLEventListener {
         int[] textureId9 = TextureLibrary.loadTexture(gl, "textures/jade.jpg");
         int[] textureId10 = TextureLibrary.loadTexture(gl, "textures/white.jpg");
         int[] textureId11 = TextureLibrary.loadTexture(gl, "textures/moon.jpg");
+        int[] textureId12 = TextureLibrary.loadTexture(gl, "textures/jade_specular.jpg");
+        int[] textureId13 = TextureLibrary.loadTexture(gl, "textures/door_specular.jpg");
+
+
 
         swingingLight = new Light(gl);
         swingingLight.setCamera(camera);
@@ -156,16 +160,24 @@ public class M04_GLEventListener implements GLEventListener {
         generalLight2 = new Light(gl);
         generalLight2.setCamera(camera);
 
+        // copper yellow
+//        material = new Material(new Vec3(0.19125f,	0.0735f,	0.0225f), new Vec3(0.7038f,	0.27048f,	0.0828f), new Vec3(0.256777f,	0.137622f,	0.086014f), 0.778125f);
+        // white rubber
+//        material = new Material(new Vec3(0.05f,0.05f,0.05f), new Vec3(0.5f,0.5f,0.5f), new Vec3(0.7f,0.7f,0.7f), 10);
+        // polished bronze
+//        material = new Material(new Vec3(0.25f, 0.148f, 0.06475f), new Vec3(0.4f, 0.2368f, 0.1036f), new Vec3(0.774597f, 0.458561f, 0.200621f), 76.8f);
+
         // floor
         Mesh mesh = new Mesh(gl, TwoTriangles.vertices.clone(), TwoTriangles.indices.clone());
-        Shader shader = new Shader(gl, "vs_tt_05.txt", "fs_tt_05.txt");
+        Shader shader = new Shader(gl, "vs_tt_05.txt", "fs_floor.txt");
         Material material = new Material(new Vec3(1.0f, 1.0f, 1.0f), new Vec3(1.0f, 1.0f, 1.0f), new Vec3(1.0f, 1.0f, 1.0f), 32.0f);
         Mat4 modelMatrix = Mat4Transform.scale(18, 1f, 18);
         floor = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shader, material, modelMatrix, mesh, textureId0);
 
         // wall back
+        shader = new Shader(gl, "vs_tt_05.txt", "fs_wall.txt");
         material = new Material(new Vec3(0.05f, 0.05f, 0.05f), new Vec3(0.5f, 0.5f, 0.5f), new Vec3(0.7f, 0.7f, 0.7f), 0.778125f);
-        wallBack = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shader, material, modelMatrix, mesh, textureId8);
+        wallBack = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shader, material, modelMatrix, mesh, textureId8,textureId13);
         wallBack.setModelMatrix(getMforBackWall());
 
         // wall left
@@ -190,7 +202,7 @@ public class M04_GLEventListener implements GLEventListener {
 
         // stand egg
         modelMatrix = Mat4.multiply(Mat4Transform.scale(3, 1, 3), Mat4Transform.translate(0, 0.5f, 0));
-        standEgg = new Model(gl, camera, swingingLight, generalLight1, generalLight2,shader, material, modelMatrix, mesh, textureId1, textureId2);
+        standEgg = new Model(gl, camera, swingingLight, generalLight1, generalLight2,shader, material, modelMatrix, mesh, textureId1);
 
         // mobile phone
         mesh = new Mesh(gl, Phone.vertices.clone(), Phone.indices.clone());
@@ -206,7 +218,7 @@ public class M04_GLEventListener implements GLEventListener {
         material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 32.0f);
         modelMatrix = Mat4.multiply(Mat4Transform.scale(2, 4, 2), Mat4Transform.translate(0, 0.5f, 0));
         modelMatrix = Mat4.multiply(Mat4Transform.translate(0, 1, 0), modelMatrix);
-        egg = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shader, material, modelMatrix, mesh, textureId9);
+        egg = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shader, material, modelMatrix, mesh, textureId9,textureId12);
 
         // light bulb
         material = new Material(new Vec3(0.5f, 0.5f, 0.5f), new Vec3(0.8f, 0.8f, 0.8f), new Vec3(0.8f, 0.8f, 0.8f), 32.0f);
@@ -348,14 +360,16 @@ public class M04_GLEventListener implements GLEventListener {
 
         rotateLowerLip = new TransformNode("rotate upper lip", Mat4Transform.rotateAroundX(10));
 
-        leanForward = new TransformNode("lean forward",Mat4Transform.rotateAroundX(0));
+        leanBody = new TransformNode("lean forward",Mat4Transform.rotateAroundX(0));
+        leanBody = new TransformNode("lean forward",Mat4Transform.rotateAroundZ(0));
 
         turnHead = new TransformNode("lean forward",Mat4Transform.rotateAroundX(0));
+        turnHead = new TransformNode("lean forward",Mat4Transform.rotateAroundZ(0));
 
         robotRoot.addChild(robotMoveTranslate);
             robotMoveTranslate.addChild(robotTranslate);
-                robotTranslate.addChild(leanForward);
-                    leanForward.addChild(body);
+                robotTranslate.addChild(leanBody);
+                    leanBody.addChild(body);
                         body.addChild(bodyTransform);
                             bodyTransform.addChild(bodyShape);
                         body.addChild(translateOnTopBody);

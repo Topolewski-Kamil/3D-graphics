@@ -49,7 +49,7 @@ public class Light {
   }
 
   public void switchOffLight(){
-    material.setAmbient(0,0,0);
+    material.setAmbient(0.1f,0.1f,0.1f);
     material.setDiffuse(0,0,0);
     material.setSpecular(0,0,0);
   }

@@ -52,9 +52,9 @@ void main() {
   vec3 norm = normalize(aNormal);
   vec3 viewDir = normalize(viewPos - aPos);
 
-  vec3 result = CalcDirLight(light, norm, viewDir);
-  result += CalcDirLight(generalLight1, norm, viewDir);
+  vec3 result = CalcDirLight(generalLight1, norm, viewDir);
   result += CalcDirLight(generalLight2, norm, viewDir);
+  result += 0.5f * CalcDirLight(light, norm, viewDir);
 
   fragColor = vec4(result, 1.0);
 }

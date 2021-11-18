@@ -5,10 +5,9 @@ in vec3 aNormal;
 in vec2 aTexCoord;
 
 out vec4 fragColor;
- 
-uniform vec3 viewPos;
+
 uniform sampler2D first_texture;
-uniform sampler2D second_texture;
+uniform vec3 viewPos;
 
 struct Light {
   vec3 position;
@@ -26,25 +25,24 @@ struct Material {
   vec3 diffuse;
   vec3 specular;
   float shininess;
-};
-
+}; 
+  
 uniform Material material;
 
 vec3 CalcDirLight(Light light, vec3 norm, vec3 viewDir)
 {
   // ambient
-  vec3 ambient = light.ambient * vec3(texture(first_texture, aTexCoord));
+  vec3 ambient = light.ambient * material.ambient * texture(first_texture, aTexCoord).rgb;
 
   // diffuse
   vec3 lightDir = normalize(light.position - aPos);
   float diff = max(dot(norm, lightDir), 0.0);
-
-  vec3 diffuse = light.diffuse * diff * vec3(texture(first_texture, aTexCoord));
+  vec3 diffuse = light.diffuse * (diff * material.diffuse) * texture(first_texture, aTexCoord).rgb;
 
   // specular
   vec3 reflectDir = reflect(-lightDir, norm);
   float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-  vec3 specular = light.specular * spec * vec3(texture(second_texture, aTexCoord));
+  vec3 specular = light.specular * (spec * material.specular);
 
   vec3 result = ambient + diffuse + specular;
   return result;
@@ -56,7 +54,7 @@ void main() {
 
   vec3 result = CalcDirLight(generalLight1, norm, viewDir);
   result += CalcDirLight(generalLight2, norm, viewDir);
-  result += 0.5 *  CalcDirLight(light, norm, viewDir);
+  result += CalcDirLight(light, norm, viewDir);
 
   fragColor = vec4(result, 1.0);
 }
