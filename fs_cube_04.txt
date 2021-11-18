@@ -18,7 +18,7 @@ struct Light {
 };
 
 uniform Light light;
-uniform Light light2;
+uniform Light generalLight1;
 uniform Light generalLight2;
 
 struct Material {
@@ -54,8 +54,8 @@ void main() {
   vec3 norm = normalize(aNormal);
   vec3 viewDir = normalize(viewPos - aPos);
   vec3 result = CalcDirLight(light, norm, viewDir);
-  result += CalcDirLight(light2, norm, viewDir);
-
+  result += CalcDirLight(generalLight1, norm, viewDir);
+  result += CalcDirLight(generalLight2, norm, viewDir);
 
   fragColor = vec4(result, 1.0);
 }

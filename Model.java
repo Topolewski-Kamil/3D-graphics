@@ -1,6 +1,4 @@
 import gmaths.*;
-import java.nio.*;
-import com.jogamp.common.nio.*;
 import com.jogamp.opengl.*;
 
 public class Model {
@@ -12,27 +10,28 @@ public class Model {
   private Shader shader;
   private Mat4 modelMatrix;
   private Camera camera;
-  private Light light, light2;
+  private Light light, generalLight1, generalLight2;
   
-  public Model(GL3 gl, Camera camera, Light light, Light light2, Shader shader, Material material, Mat4 modelMatrix, Mesh mesh, int[] textureId1, int[] textureId2) {
+  public Model(GL3 gl, Camera camera, Light light, Light generalLight1, Light generalLight2, Shader shader, Material material, Mat4 modelMatrix, Mesh mesh, int[] textureId1, int[] textureId2) {
     this.mesh = mesh;
     this.material = material;
     this.modelMatrix = modelMatrix;
     this.shader = shader;
     this.camera = camera;
     this.light = light;
-    this.light2 = light2;
+    this.generalLight1 = generalLight1;
+    this.generalLight2 = generalLight2;
     this.textureId1 = textureId1;
     this.textureId2 = textureId2;
   }
   
-  public Model(GL3 gl, Camera camera, Light light, Light light2, Shader shader, Material material, Mat4 modelMatrix, Mesh mesh, int[] textureId1) {
-    this(gl, camera, light, light2, shader, material, modelMatrix, mesh, textureId1, null);
+  public Model(GL3 gl, Camera camera, Light light, Light generalLight1, Light generalLight2, Shader shader, Material material, Mat4 modelMatrix, Mesh mesh, int[] textureId1) {
+    this(gl, camera, light, generalLight1, generalLight2, shader, material, modelMatrix, mesh, textureId1, null);
 
   }
   
-  public Model(GL3 gl, Camera camera, Light light, Light light2, Shader shader, Material material, Mat4 modelMatrix, Mesh mesh) {
-    this(gl, camera, light, light2, shader, material, modelMatrix, mesh, null, null);
+  public Model(GL3 gl, Camera camera, Light light, Light generalLight1, Light generalLight2, Shader shader, Material material, Mat4 modelMatrix, Mesh mesh) {
+    this(gl, camera, light, generalLight1, generalLight2, shader, material, modelMatrix, mesh, null, null);
   }
   
   public void setModelMatrix(Mat4 m) {
@@ -56,10 +55,15 @@ public class Model {
     shader.setVec3(gl, "light.diffuse", light.getMaterial().getDiffuse());
     shader.setVec3(gl, "light.specular", light.getMaterial().getSpecular());
 
-    shader.setVec3(gl, "light2.position", light2.getPosition());
-    shader.setVec3(gl, "light2.ambient", light2.getMaterial().getAmbient());
-    shader.setVec3(gl, "light2.diffuse", light2.getMaterial().getDiffuse());
-    shader.setVec3(gl, "light2.specular", light2.getMaterial().getSpecular());
+    shader.setVec3(gl, "generalLight1.position", generalLight1.getPosition());
+    shader.setVec3(gl, "generalLight1.ambient", generalLight1.getMaterial().getAmbient());
+    shader.setVec3(gl, "generalLight1.diffuse", generalLight1.getMaterial().getDiffuse());
+    shader.setVec3(gl, "generalLight1.specular", generalLight1.getMaterial().getSpecular());
+
+    shader.setVec3(gl, "generalLight2.position", generalLight2.getPosition());
+    shader.setVec3(gl, "generalLight2.ambient", generalLight2.getMaterial().getAmbient());
+    shader.setVec3(gl, "generalLight2.diffuse", generalLight2.getMaterial().getDiffuse());
+    shader.setVec3(gl, "generalLight2.specular", generalLight2.getMaterial().getSpecular());
 
     shader.setVec3(gl, "material.ambient", material.getAmbient());
     shader.setVec3(gl, "material.diffuse", material.getDiffuse());
