@@ -7,9 +7,9 @@ import java.time.LocalTime;
  * @author Dr Steve Maddock
  * @author Kamil Topolewski (unauthored bits)
  */
-public class M04_GLEventListener implements GLEventListener {
+public class Museum_GLEventListener implements GLEventListener {
 
-    public M04_GLEventListener(Camera camera) {
+    public Museum_GLEventListener(Camera camera) {
         this.camera = camera;
         this.camera.setPosition(new Vec3(4f, 12f, 18f));
     }
