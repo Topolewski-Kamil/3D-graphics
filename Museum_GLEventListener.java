@@ -30,7 +30,7 @@ public class Museum_GLEventListener implements GLEventListener {
         gl.glCullFace(GL.GL_BACK);   // default is 'back', assuming CCW
         initialise(gl);
         appStartTime = getSeconds();
-        elapsedTime2 = getSeconds();
+        animationTime = getSeconds();
     }
 
     /**
@@ -198,9 +198,9 @@ public class Museum_GLEventListener implements GLEventListener {
         lightCase = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, matt, modelMatrix, cube, woodBox, woodBoxSpecular);
 
         //light stand top
-        modelMatrix = Mat4.multiply(Mat4Transform.scale(0.37f, 0.2f, 3), initTranslate);
+        modelMatrix = Mat4.multiply(Mat4Transform.scale(0.37f, 0.2f, 1.7f), initTranslate);
         modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundY(90), modelMatrix);
-        modelMatrix = Mat4.multiply(Mat4Transform.translate(6.69f, 4.9f, 0), modelMatrix);
+        modelMatrix = Mat4.multiply(Mat4Transform.translate(7.54f, 4.9f, 0), modelMatrix);
         lampTop = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, matt, modelMatrix, cube, woodBox, woodBoxSpecular);
 
         //light stand middle
@@ -412,44 +412,45 @@ public class Museum_GLEventListener implements GLEventListener {
         robotRoot.draw(gl);
     }
 
-
-
+    /*
+      Animates robot to go around in circle and stops at poses 1-5
+     */
     private void animateRobot() {
-        elapsedTime2 = getSeconds()- appStartTime - diff;
-        elapsedTime3 = getSeconds()- appStartTime - diff;
+        animationTime = getSeconds()- appStartTime - timeDelay; // keep a delay on animation timer
 
-        if (elapsedTime2 - time2 >= 2.1) {
+        // dont change the pose until 2 seconds elapse
+        if (animationTime - time2 >= 2.1)
             keepPose = false;
-        } else {
+        else
             return;
-        }
-        float x = 5.0f*(float)(Math.sin(Math.toRadians(elapsedTime2*50)));
-        float z = 5.0f*(float)(Math.cos(Math.toRadians(elapsedTime2*50)));
 
-        if ((x < -4.8f && x > -5f && z > 0.3 && z <  0.5)){
-            translateToPose5();
+        float x = 5.0f*(float)(Math.sin(Math.toRadians(animationTime *50)));
+        float z = 5.0f*(float)(Math.cos(Math.toRadians(animationTime *50)));
+
+        // detect coordinates for different poses
+        if ((x < 0.1 && x > -0.1 && z > -5.1 && z < -4.9)){
+            translateToPose1();
         } else if ((x < 4.4 && x > 4.2 && z > -2.5 && z < -2.3)){
             translateToPose2();
-        } else if ((x < 0.1 && x > -0.1 && z > -5.1 && z < -4.9)){
-            translateToPose1();
         } else if ((x < 5.1 && x > 4.9 && z > -0.1 && z < 0.1)){
             translateToPose3();
-        } else if ((x < 0.1 && x > -0.1 && z < 5.1 && z > 4.9)){
+        } else if ((x < 0.1 && x > -0.1 && z < 5.1 && z > 4.9)) {
             translateToPose4();
-        } else {
+        } else if ((x < -4.8f && x > -5f && z > 0.3 && z <  0.5)){
+                translateToPose5();
+        } else { // if no pose at certain point - keep going
             resetPose();
-            robotMoveTranslate.setTransform(Mat4Transform.translate(x,0,z));
+            float angle = 200.0f*(float)(Math.cos(animationTime));
+            Mat4 m = Mat4.multiply(Mat4Transform.translate(x,0,z), Mat4Transform.rotateAroundY(angle));
+            robotMoveTranslate.setTransform(m);
             robotMoveTranslate.update();
             return;
         }
 
-        if (!keepPose){
-            diff += 2;
-            time2 = elapsedTime2- 2;
-        }
+        timeDelay += 2;
+        time2 = animationTime - 2;
         keepPose = true;
         moveAnimation = true;
-
     }
 
     private void headRotate(float angle) {
@@ -534,7 +535,7 @@ public class Museum_GLEventListener implements GLEventListener {
         double elapsedTime = getSeconds() - appStartTime;
         float y = 0.5f * (float) (Math.sin(elapsedTime));
         float z = 2 * (float) (Math.sin(elapsedTime));
-        return new Vec3(5, Math.abs(y) + 3.5f, -z);
+        return new Vec3(6.5f, Math.abs(y) + 3.5f, -z);
     }
 
     private Vec3 getGeneralLightPosition1() {
@@ -587,7 +588,7 @@ public class Museum_GLEventListener implements GLEventListener {
         modelMatrix = Mat4.multiply(Mat4Transform.scale(sizeX, sizeY, sizeZ), modelMatrix);
         modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundX(180), modelMatrix);
         modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundX(20 * (float) Math.sin(elapsedTime)), modelMatrix);
-        modelMatrix = Mat4.multiply(Mat4Transform.translate(5f, 5f, 0), modelMatrix);
+        modelMatrix = Mat4.multiply(Mat4Transform.translate(6.5f, 5, 0), modelMatrix);
         return modelMatrix;
     }
 
@@ -601,7 +602,7 @@ public class Museum_GLEventListener implements GLEventListener {
         modelMatrix = Mat4.multiply(Mat4Transform.scale(sizeX, sizeY, sizeZ), modelMatrix);
         modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundX(180), modelMatrix);
         modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundX(20 * (float) Math.sin(elapsedTime)), modelMatrix);
-        modelMatrix = Mat4.multiply(Mat4Transform.translate(5f, 5.1f, 0), modelMatrix);
+        modelMatrix = Mat4.multiply(Mat4Transform.translate(6.5f, 5.1f, 0), modelMatrix);
         return modelMatrix;
     }
 
@@ -613,9 +614,8 @@ public class Museum_GLEventListener implements GLEventListener {
     private double appStartTime;
     private boolean keepPose;
     private double time2;
-    private double diff = 0;
-    private double elapsedTime2;
-    private double elapsedTime3;
+    private double timeDelay = 0;
+    private double animationTime;
     private double getSeconds() {
         return System.currentTimeMillis() / 1000.0;
     }
