@@ -53,7 +53,10 @@ public class Museum extends JFrame implements ActionListener {
     menuBar.add(fileMenu);
     
     JPanel p = new JPanel();
-      JButton b = new JButton("animate face");
+      JButton b = new JButton("animate movement");
+      b.addActionListener(this);
+      p.add(b);
+      b = new JButton("animate face");
       b.addActionListener(this);
       p.add(b);
       b = new JButton("light 1");
@@ -86,6 +89,9 @@ public class Museum extends JFrame implements ActionListener {
   public void actionPerformed(ActionEvent e) {
     if (e.getActionCommand().equalsIgnoreCase("animate face")) {
       glEventListener.changeFaceAnimation();
+    }
+    else if (e.getActionCommand().equalsIgnoreCase("animate movement")) {
+      glEventListener.changeMoveAnimation();
     }
     else if (e.getActionCommand().equalsIgnoreCase("light 1")) {
       glEventListener.changeLight1();
