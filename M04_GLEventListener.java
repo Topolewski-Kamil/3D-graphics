@@ -4,7 +4,7 @@ import java.time.LocalTime;
 
 
 /**
- * @author Dr Steve Maddock
+ * @author Dr Steve Maddock, Kamil Topolewski (unauthored bits are written by myself)
  */
 public class M04_GLEventListener implements GLEventListener {
 
@@ -77,38 +77,32 @@ public class M04_GLEventListener implements GLEventListener {
         sphereOrange.dispose(gl);
     }
 
-    private boolean faceAnimation, light1on, light2on, spotLight;
 
-    /* ON/OFF methods for lights and animations */
-    public void changeFaceAnimation() {
+    /* ON/OFF for lights and animations */
+    private boolean faceAnimation, light1on, light2on, spotLight;
+    void changeFaceAnimation() {
         this.faceAnimation = !faceAnimation;
     }
-
-    public void changeLight1() {
+    void changeLight1() {
         this.light1on = !light1on;
     }
-
-    public void changeLight2() {
+    void changeLight2() {
         this.light2on = !light2on;
     }
-
-    public void changeSpotLight() {
+    void changeSpotLight() {
         this.spotLight = !spotLight;
     }
 
     // ***************************************************
     /* THE SCENE
      * Now define all the methods to handle the scene.
-     * This will be added to in later examples.
      */
-
     private Camera camera;
     private Model floor, wallBack, wallLeft, outside, standPhone, lightTop, standEgg, mobilePhone, egg, lightCase, lampTop,
             lampMid, lampBtm, sphereYellow, sphereWhite, sphereBlack,sphereOrange;
     private Light swingingLight, generalLight1, generalLight2;
     private SGNode robotRoot;
 
-    private float xPosition = 0;
     private TransformNode rotateUpperLip, rotateLowerLip, robotMoveTranslate, leanBody, turnHead, translateRightPupilOnEye, translateLeftPupilOnEye;
 
     private void initialise(GL3 gl) {
@@ -216,7 +210,7 @@ public class M04_GLEventListener implements GLEventListener {
         lampBtm = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, matt, modelMatrix, cube, woodBox, woodBoxSpecular);
 
 
-        /* robot */
+        /* robot elements */
         sphereYellow = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, matt, null, sphere, yellow);
         sphereWhite = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, matt, null, sphere, white);
         sphereBlack = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, matt, null, sphere, black);
@@ -231,11 +225,11 @@ public class M04_GLEventListener implements GLEventListener {
         float legScale = 0.5f;
         float mouthScale = 0.5f;
 
+        /* robot scene graph transformations */
         robotRoot = new NameNode("root");
-        robotMoveTranslate = new TransformNode("robot transform",Mat4Transform.translate(xPosition,0,0));
 
         // init robot position
-        TransformNode robotTranslate = new TransformNode("robot transform",Mat4Transform.translate(-4, legScale,0));
+        TransformNode robotTranslate = new TransformNode("robot transform",Mat4Transform.translate(0, legScale,0));
 
         NameNode body = new NameNode("body");
         Mat4 m = Mat4.multiply(Mat4Transform.scale(bodyX,bodyY,bodyX), initTranslate);
@@ -285,38 +279,38 @@ public class M04_GLEventListener implements GLEventListener {
         TransformNode legTransform = new TransformNode("leg transform", m);
         ModelNode legShape = new ModelNode("Sphere(leg)", sphereYellow);
 
-        TransformNode translateOnTopBody
-                = new TransformNode("translate(0,bodyY,0)",Mat4Transform.translate(0,bodyY,0));
+        m = Mat4Transform.translate(0,bodyY,0);
+        TransformNode translateOnTopBody = new TransformNode("translate(0,bodyY,0)", m);
 
-        TransformNode translateOnTopNeck
-                = new TransformNode("translate(0,bodyY,0)",Mat4Transform.translate(0,bodyY + neckScale,0));
+        m = Mat4Transform.translate(0,bodyY + neckScale,0);
+        TransformNode translateOnTopNeck = new TransformNode("translate(0,bodyY,0)", m);
 
-        TransformNode translateRightEyeOnHead
-                = new TransformNode("translate(0,bodyY,0)",Mat4Transform.translate(0.2f,headScale/2 , headScale/2.5f));
+        m = Mat4Transform.translate(0.2f,headScale/2 , headScale/2.5f);
+        TransformNode translateRightEyeOnHead = new TransformNode("translate(0,bodyY,0)", m);
 
-        TransformNode translateLeftEyeOnHead
-                = new TransformNode("translate(0,bodyY,0)",Mat4Transform.translate(-0.2f,headScale/2, headScale/2.5f));
+        m = Mat4Transform.translate(-0.2f,headScale/2, headScale/2.5f);
+        TransformNode translateLeftEyeOnHead = new TransformNode("translate(0,bodyY,0)", m);
 
-        translateRightPupilOnEye = new TransformNode("translate(0,bodyY,0)",Mat4Transform.translate(0,eyeScale/4 , 0.15f));
+        m = Mat4Transform.translate(0,eyeScale/4 , 0.15f);
+        translateRightPupilOnEye = new TransformNode("translate(0,bodyY,0)", m);
 
-        translateLeftPupilOnEye = new TransformNode("translate(0,bodyY,0)",Mat4Transform.translate(0,eyeScale/4 , 0.15f));
+        m = Mat4Transform.translate(0,eyeScale/4 , 0.15f);
+        translateLeftPupilOnEye = new TransformNode("translate(0,bodyY,0)", m);
 
-        TransformNode translateMouth
-                = new TransformNode("translate(0,bodyY,0)",Mat4Transform.translate(0,headScale/2.5f, headScale/2));
+        m = Mat4Transform.translate(0,headScale/2.5f, headScale/2);
+        TransformNode translateMouth = new TransformNode("translate(0,bodyY,0)", m);
 
-        TransformNode translateLegUnderBody
-                = new TransformNode("translate(0,bodyY,0)",Mat4Transform.translate(0,-bodyY/4, 0));
+        m = Mat4Transform.translate(0,-bodyY/4, 0);
+        TransformNode translateLegUnderBody = new TransformNode("translate(0,bodyY,0)", m);
 
+        /* robot actions */
+        robotMoveTranslate = new TransformNode("robot transform",Mat4Transform.translate(0,0,-5));
         rotateUpperLip = new TransformNode("rotate upper lip", Mat4Transform.rotateAroundX(-10));
-
         rotateLowerLip = new TransformNode("rotate upper lip", Mat4Transform.rotateAroundX(10));
-
         leanBody = new TransformNode("lean forward",Mat4Transform.rotateAroundX(0));
-        leanBody = new TransformNode("lean forward",Mat4Transform.rotateAroundZ(0));
-
-        turnHead = new TransformNode("lean forward",Mat4Transform.rotateAroundX(0));
         turnHead = new TransformNode("lean forward",Mat4Transform.rotateAroundZ(0));
 
+        /* robot scene graph */
         robotRoot.addChild(robotMoveTranslate);
             robotMoveTranslate.addChild(robotTranslate);
                 robotTranslate.addChild(leanBody);
@@ -374,9 +368,10 @@ public class M04_GLEventListener implements GLEventListener {
         generalLight1.setPosition(getGeneralLightPosition1());  // changing light position each frame
         generalLight2.setPosition(getGeneralLightPosition2());  // changing light position each frame
 
-
         floor.render(gl);
         wallBack.render(gl);
+
+        // left wall grid
         for (int i = 1; i < 4; i++) {
             for (int j = 1; j < 4; j++) {
                 if (!(i == 2 && j == 2)) {
@@ -416,13 +411,6 @@ public class M04_GLEventListener implements GLEventListener {
         robotRoot.draw(gl);
     }
 
-    private void updateLeftArm() {
-        double elapsedTime = getSeconds()-startTime;
-        float rotateAngle = (float)Math.sin(elapsedTime);
-        robotMoveTranslate.setTransform(Mat4Transform.rotateAroundX(rotateAngle));
-        robotMoveTranslate.update();
-    }
-
     private void updateMouth() {
         double elapsedTime = getSeconds()-startTime;
         float rotateAngle = 10f * (float)Math.sin(elapsedTime*5);
@@ -443,7 +431,6 @@ public class M04_GLEventListener implements GLEventListener {
         translateLeftPupilOnEye.update();
     }
 
-    // The light's postion is continually being changed, so needs to be calculated for each frame.
     private Vec3 getSwingLightPosition() {
         double elapsedTime = getSeconds() - startTime;
         float x = 5f;
@@ -460,7 +447,6 @@ public class M04_GLEventListener implements GLEventListener {
         return new Vec3(6, 10, 6);
     }
 
-    // As the transforms do not change over time for this object, they could be stored once rather than continually being calculated
     private Mat4 getMforBackWall() {
         float sizeX = 18f;
         float sizeZ = 12f;
@@ -471,7 +457,6 @@ public class M04_GLEventListener implements GLEventListener {
         return modelMatrix;
     }
 
-    // As the transforms do not change over time for this object, they could be stored once rather than continually being calculated
     private Mat4 getMforLeftWall(int i, int j) {
         float sizeX = 6f;
         float sizeZ = 4f;
@@ -480,11 +465,9 @@ public class M04_GLEventListener implements GLEventListener {
         modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundY(90), modelMatrix);
         modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundZ(-90), modelMatrix);
         modelMatrix = Mat4.multiply(Mat4Transform.translate(-9f, sizeZ * j - 2f, i * sizeX - 2 * sizeX), modelMatrix);
-
         return modelMatrix;
     }
 
-    // As the transforms do not change over time for this object, they could be stored once rather than continually being calculated
     private Mat4 getMforOutside() {
         float sizeX = 18f;
         float sizeZ = 12f;
@@ -496,7 +479,6 @@ public class M04_GLEventListener implements GLEventListener {
         return modelMatrix;
     }
 
-    // As the transforms do not change over time for this object, they could be stored once rather than continually being calculated
     private Mat4 getMforLamp() {
         double elapsedTime = getSeconds() - startTime;
         float sizeX = 0.3f;
@@ -511,7 +493,6 @@ public class M04_GLEventListener implements GLEventListener {
         return modelMatrix;
     }
 
-    // As the transforms do not change over time for this object, they could be stored once rather than continually being calculated
     private Mat4 getMforLampCase() {
         double elapsedTime = getSeconds() - startTime;
         float sizeX = 0.37f;
@@ -527,10 +508,9 @@ public class M04_GLEventListener implements GLEventListener {
     }
 
 
-
-
     // ***************************************************
     /* TIME
+    * @author Dr Steve Maddoc
      */
 
     private double startTime;
@@ -538,10 +518,6 @@ public class M04_GLEventListener implements GLEventListener {
     private double getSeconds() {
         return System.currentTimeMillis() / 1000.0;
     }
-
-    // ***************************************************
-    /* An array of random numbers
-     */
 
     private int NUM_RANDOMS = 1000;
     private float[] randoms;
