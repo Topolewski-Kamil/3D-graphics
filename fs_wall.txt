@@ -1,5 +1,5 @@
 #version 330 core
-
+// @author Dr Steve Maddock - initial, Kamil Topolewski - adjustments (two more light sources)
 in vec3 aPos;
 in vec3 aNormal;
 in vec2 aTexCoord;

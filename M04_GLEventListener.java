@@ -4,7 +4,8 @@ import java.time.LocalTime;
 
 
 /**
- * @author Dr Steve Maddock, Kamil Topolewski (unauthored bits are written by myself)
+ * @author Dr Steve Maddock
+ * @author Kamil Topolewski (unauthored bits)
  */
 public class M04_GLEventListener implements GLEventListener {
 
@@ -108,8 +109,8 @@ public class M04_GLEventListener implements GLEventListener {
     private void initialise(GL3 gl) {
         createRandomNumbers();
         int[] floorWood = TextureLibrary.loadTexture(gl, "textures/wood.jpg");
-        int[] woodBox = TextureLibrary.loadTexture(gl, "textures/container2.jpg");
-        int[] woodBoxSpecular = TextureLibrary.loadTexture(gl, "textures/container2_specular.jpg");
+        int[] woodBox = TextureLibrary.loadTexture(gl, "textures/wooden_box.jpg");
+        int[] woodBoxSpecular = TextureLibrary.loadTexture(gl, "textures/wooden_box_specular.jpg");
         int[] phoneScreen = TextureLibrary.loadTexture(gl, "textures/phone.jpg");
         int[] clouds = TextureLibrary.loadTexture(gl, "textures/cloud.jpg");
         int[] wallWhite = TextureLibrary.loadTexture(gl, "textures/wall.jpg");
@@ -119,8 +120,8 @@ public class M04_GLEventListener implements GLEventListener {
         int[] orange = TextureLibrary.loadTexture(gl, "textures/orange.jpg");
         int[] white = TextureLibrary.loadTexture(gl, "textures/white.jpg");
         int[] moon = TextureLibrary.loadTexture(gl, "textures/moon.jpg");
-        int[] eggBlue = TextureLibrary.loadTexture(gl, "textures/test1.jpg");
-        int[] eggBlueSpecular = TextureLibrary.loadTexture(gl, "textures/test2.jpg");
+        int[] eggBlue = TextureLibrary.loadTexture(gl, "textures/egg_blue.jpg");
+        int[] eggBlueSpecular = TextureLibrary.loadTexture(gl, "textures/egg_blue_specular.jpg");
 
         swingingLight = new Light(gl);
         swingingLight.setCamera(camera);

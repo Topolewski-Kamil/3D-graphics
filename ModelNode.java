@@ -1,5 +1,8 @@
 import com.jogamp.opengl.*;
 
+/**
+ * @author Dr Steve Maddock
+ */
 public class ModelNode extends SGNode {
 
   protected Model model;

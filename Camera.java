@@ -2,6 +2,9 @@ import gmaths.*;
 import java.awt.event.*;
 import com.jogamp.opengl.awt.GLCanvas;
 
+/**
+ * @author Dr Steve Maddock
+ */
 public class Camera {
   
   public enum CameraType {X, Z};

@@ -2,7 +2,9 @@ import gmaths.*;
 import java.nio.*;
 import com.jogamp.common.nio.*;
 import com.jogamp.opengl.*;
-
+/**
+ * @author Dr Steve Maddock
+ */
 public class Mesh {
   
   private float[] vertices;

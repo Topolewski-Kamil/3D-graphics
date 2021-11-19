@@ -1,7 +1,9 @@
 import gmaths.*;
 import java.util.ArrayList;
 import com.jogamp.opengl.*;
-
+/**
+ * @author Dr Steve Maddock
+ */
 public class SGNode {
 
   protected String name;

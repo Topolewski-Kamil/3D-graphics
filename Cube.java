@@ -1,10 +1,13 @@
+/**
+ * @author Dr Steve Maddock
+ */
 public final class Cube {
   
   // ***************************************************
   /* THE DATA
    */
   // anticlockwise/counterclockwise ordering
-  
+
    public static final float[] vertices = new float[] {  // x,y,z, nx,ny,nz, s,t
       -0.5f, -0.5f, -0.5f,  -1, 0, 0,  0.0f, 0.0f,  // 0
       -0.5f, -0.5f,  0.5f,  -1, 0, 0,  1.0f, 0.0f,  // 1

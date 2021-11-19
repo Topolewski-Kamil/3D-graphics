@@ -1,6 +1,8 @@
 import gmaths.*;
 import com.jogamp.opengl.*;
-
+/**
+ * @author Dr Steve Maddock
+ */
 public class TransformNode extends SGNode {
 
   private Mat4 transform;

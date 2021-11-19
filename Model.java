@@ -1,6 +1,10 @@
 import gmaths.*;
 import com.jogamp.opengl.*;
 
+/**
+ * @author Dr Steve Maddock
+ * @author Kamil Topolewski - added two more light sources alterations
+ */
 public class Model {
   
   private Mesh mesh;

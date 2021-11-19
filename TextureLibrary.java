@@ -2,7 +2,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.util.texture.spi.JPEGImage;
-
+/**
+ * @author Dr Steve Maddock
+ */
 public final class TextureLibrary {
 
   // only deals with rgb jpg files

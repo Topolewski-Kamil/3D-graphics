@@ -2,7 +2,10 @@ import gmaths.*;
 import java.nio.*;
 import com.jogamp.common.nio.*;
 import com.jogamp.opengl.*;
-  
+/**
+ * @author Dr Steve Maddock
+ * @author Kamil Topolewski - switchOffLight(), switchOnLight()
+ */
 public class Light {
   
   private Material material;
@@ -47,6 +50,7 @@ public class Light {
   public void setCamera(Camera camera) {
     this.camera = camera;
   }
+
 
   public void switchOffLight(){
     material.setAmbient(0.1f,0.1f,0.1f);

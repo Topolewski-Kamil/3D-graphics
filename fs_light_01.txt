@@ -1,5 +1,5 @@
 #version 330 core
-
+// @author Dr Steve Maddock
 out vec4 fragColor;
 
 void main() {

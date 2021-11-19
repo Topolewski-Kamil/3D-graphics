@@ -1,3 +1,6 @@
+/**
+ * @author Dr Steve Maddock
+ */
 public final class TwoTriangles {
   
   // ***************************************************

@@ -4,8 +4,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.charset.Charset;
 import com.jogamp.opengl.*;
-import com.jogamp.opengl.util.glsl.*;  
-  
+import com.jogamp.opengl.util.glsl.*;
+/**
+ * @author Dr Steve Maddock
+ */
 public class Shader {
   
   private static final boolean DISPLAY_SHADERS = false;

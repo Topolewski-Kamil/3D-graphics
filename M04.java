@@ -6,6 +6,10 @@ import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
 
+/**
+ * @author Dr Steve Maddock
+ * @author Kamil Topolewski - (unauthored bits)
+ */
 public class M04 extends JFrame implements ActionListener {
   
   private static final int WIDTH = 1024;
@@ -16,6 +20,9 @@ public class M04 extends JFrame implements ActionListener {
   private final FPSAnimator animator; 
   private Camera camera;
 
+  /**
+   * @author Dr Steve Maddock
+   */
   public static void main(String[] args) {
     M04 b1 = new M04("M04");
     b1.getContentPane().setPreferredSize(dimension);
@@ -23,6 +30,10 @@ public class M04 extends JFrame implements ActionListener {
     b1.setVisible(true);
   }
 
+  /**
+   * @author Dr Steve Maddock
+   * @author Kamil Topolewski - alterations for assignment purposes
+   */
   public M04(String textForTitleBar) {
     super(textForTitleBar);
     GLCapabilities glcapabilities = new GLCapabilities(GLProfile.get(GLProfile.GL3));
@@ -68,7 +79,11 @@ public class M04 extends JFrame implements ActionListener {
     animator = new FPSAnimator(canvas, 60);
     animator.start();
   }
-  
+
+  /**
+   * @author Dr Steve Maddock
+   * @author Kamil Topolewski - alterations for assignment purposes
+   */
   public void actionPerformed(ActionEvent e) {
     if (e.getActionCommand().equalsIgnoreCase("animate face")) {
       glEventListener.changeFaceAnimation();
@@ -87,7 +102,10 @@ public class M04 extends JFrame implements ActionListener {
   }
   
 }
- 
+
+/**
+ * @author Dr Steve Maddock
+ */
 class MyKeyboardInput extends KeyAdapter  {
   private Camera camera;
   
@@ -109,6 +127,9 @@ class MyKeyboardInput extends KeyAdapter  {
   }
 }
 
+/**
+ * @author Dr Steve Maddock
+ */
 class MyMouseInput extends MouseMotionAdapter {
   private Point lastpoint;
   private Camera camera;

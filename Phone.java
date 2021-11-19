@@ -1,3 +1,7 @@
+/**
+ * @author Dr Steve Maddock
+ * @author Kamil Topolewski - texture corrdinates alterations
+ */
 public final class Phone {
   
   // ***************************************************
