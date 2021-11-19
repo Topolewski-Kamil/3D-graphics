@@ -1,7 +1,5 @@
 import gmaths.*;
 import com.jogamp.opengl.*;
-import java.time.LocalTime;
-
 
 /**
  * @author Dr Steve Maddock
@@ -58,10 +56,10 @@ public class Museum_GLEventListener implements GLEventListener {
         swingingLight.dispose(gl);
         generalLight1.dispose(gl);
         generalLight2.dispose(gl);
-        floor.dispose(gl);
-        wallBack.dispose(gl);
-        wallLeft.dispose(gl);
-        outside.dispose(gl);
+        room.floor.dispose(gl);
+        room.wallBack.dispose(gl);
+        room.wallLeft.dispose(gl);
+        room.outside.dispose(gl);
         lightTop.dispose(gl);
         lampTop.dispose(gl);
         lampMid.dispose(gl);
@@ -101,23 +99,17 @@ public class Museum_GLEventListener implements GLEventListener {
      * Now define all the methods to handle the scene.
      */
     private Camera camera;
-    private Model floor, wallBack, wallLeft, outside, standPhone, lightTop, standEgg, mobilePhone, egg, lightCase, lampTop,
+    private Model standPhone, lightTop, standEgg, mobilePhone, egg, lightCase, lampTop,
             lampMid, lampBtm;
     private Light swingingLight, generalLight1, generalLight2;
     Robot roboDuck;
-
-//    private TransformNode rotateUpperLip, rotateLowerLip, robotMoveTranslate, leanBody, turnHead, rotateRightPupil, rotateLeftPupil;
+    private Room room;
 
     private void initialise(GL3 gl) {
-        int[] floorWood = TextureLibrary.loadTexture(gl, "textures/wood.jpg");
         int[] woodBox = TextureLibrary.loadTexture(gl, "textures/wooden_box.jpg");
         int[] woodBoxSpecular = TextureLibrary.loadTexture(gl, "textures/wooden_box_specular.jpg");
         int[] phoneScreen = TextureLibrary.loadTexture(gl, "textures/phone.jpg");
-        int[] clouds = TextureLibrary.loadTexture(gl, "textures/cloud.jpg");
-        int[] wallWhite = TextureLibrary.loadTexture(gl, "textures/wall.jpg");
-        int[] wallWithDoor = TextureLibrary.loadTexture(gl, "textures/door.jpg");
         int[] white = TextureLibrary.loadTexture(gl, "textures/white.jpg");
-        int[] moon = TextureLibrary.loadTexture(gl, "textures/moon.jpg");
         int[] eggBlue = TextureLibrary.loadTexture(gl, "textures/egg_blue.jpg");
         int[] eggBlueSpecular = TextureLibrary.loadTexture(gl, "textures/egg_blue_specular.jpg");
 
@@ -134,36 +126,13 @@ public class Museum_GLEventListener implements GLEventListener {
         Mat4 initTranslate = Mat4Transform.translate(0, 0.5f, 0);
 
         Material shiny = new Material(new Vec3(1.0f, 1.0f, 1.0f), new Vec3(1.0f, 1.0f, 1.0f), new Vec3(1.0f, 1.0f, 1.0f), 32.0f);
-        Material whiteRubber = new Material(new Vec3(0.8f, 0.8f, 0.8f), new Vec3(0.5f, 0.5f, 0.5f), new Vec3(0.7f, 0.7f, 0.7f), 0.778125f);
         Material matt = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 32.0f);
 
-        Mesh twoTriangles = new Mesh(gl, TwoTriangles.vertices.clone(), TwoTriangles.indices.clone());
         Mesh cube = new Mesh(gl, Cube.vertices.clone(), Cube.indices.clone());
         Mesh phone = new Mesh(gl, Phone.vertices.clone(), Phone.indices.clone());
         Mesh sphere = new Mesh(gl, Sphere.vertices.clone(), Sphere.indices.clone());
 
-        Shader floorShader = new Shader(gl, "vs_tt_05.txt", "fs_floor.txt");
-        Shader wallShader = new Shader(gl, "vs_tt_05.txt", "fs_wall.txt");
         Shader shaderCube = new Shader(gl, "vs_cube_04.txt", "fs_cube_04.txt");
-
-        // floor
-        modelMatrix = Mat4Transform.scale(18, 1f, 18);
-        floor = new Model(gl, camera, swingingLight, generalLight1, generalLight2, floorShader, shiny, modelMatrix, twoTriangles, floorWood);
-
-        // wall back
-        wallBack = new Model(gl, camera, swingingLight, generalLight1, generalLight2, wallShader, whiteRubber, modelMatrix, twoTriangles, wallWithDoor);
-        wallBack.setModelMatrix(getMforBackWall());
-
-        // wall left
-        wallLeft = new Model(gl, camera, swingingLight, generalLight1, generalLight2, wallShader, whiteRubber, modelMatrix, twoTriangles, wallWhite);
-
-        // outside
-        LocalTime now = LocalTime.now();
-        if (now.isBefore(LocalTime.parse("08:00")) || now.isAfter(LocalTime.parse("20:00")))
-            outside = new Model(gl, camera, swingingLight, generalLight1, generalLight2, wallShader, shiny, modelMatrix, twoTriangles, moon);
-        else
-            outside = new Model(gl, camera, swingingLight, generalLight1, generalLight2, wallShader, shiny, modelMatrix, twoTriangles, clouds);
-        outside.setModelMatrix(getMforOutside());
 
         // stand phone
         modelMatrix = Mat4.multiply(Mat4Transform.scale(3, 1, 3), initTranslate);
@@ -206,6 +175,8 @@ public class Museum_GLEventListener implements GLEventListener {
         modelMatrix = Mat4.multiply(Mat4Transform.translate(8, 0, 0), modelMatrix);
         lampBtm = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, matt, modelMatrix, cube, woodBox, woodBoxSpecular);
 
+        room = new Room(gl, camera, swingingLight, generalLight1, generalLight2);
+
         // robot init
         roboDuck = new Robot(gl, camera, swingingLight, generalLight1, generalLight2);
     }
@@ -216,20 +187,20 @@ public class Museum_GLEventListener implements GLEventListener {
         generalLight1.setPosition(getGeneralLightPosition1());  // changing light position each frame
         generalLight2.setPosition(getGeneralLightPosition2());  // changing light position each frame
 
-        floor.render(gl);
-        wallBack.render(gl);
+        room.floor.render(gl);
+        room.wallBack.render(gl);
+        room.outside.render(gl);
 
         // left wall grid (window)
         for (int i = 1; i < 4; i++) {
             for (int j = 1; j < 4; j++) {
                 if (!(i == 2 && j == 2)) {
-                    wallLeft.setModelMatrix(getMforLeftWall(i, j));
-                    wallLeft.render(gl);
+                    room.wallLeft.setModelMatrix(getMforLeftWall(i, j));
+                    room.wallLeft.render(gl);
                 }
             }
         }
 
-        outside.render(gl);
         standEgg.render(gl);
         egg.render(gl);
         standPhone.render(gl);
@@ -275,16 +246,6 @@ public class Museum_GLEventListener implements GLEventListener {
         return new Vec3(6, 10, 6);
     }
 
-    private Mat4 getMforBackWall() {
-        float sizeX = 18f;
-        float sizeZ = 12f;
-        Mat4 modelMatrix = new Mat4(1);
-        modelMatrix = Mat4.multiply(Mat4Transform.scale(sizeX, 1f, sizeZ), modelMatrix);
-        modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundX(90), modelMatrix);
-        modelMatrix = Mat4.multiply(Mat4Transform.translate(0, sizeZ * 0.5f, -sizeX * 0.5f), modelMatrix);
-        return modelMatrix;
-    }
-
     private Mat4 getMforLeftWall(int i, int j) {
         float sizeX = 6f;
         float sizeZ = 4f;
@@ -293,17 +254,6 @@ public class Museum_GLEventListener implements GLEventListener {
         modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundY(90), modelMatrix);
         modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundZ(-90), modelMatrix);
         modelMatrix = Mat4.multiply(Mat4Transform.translate(-9f, sizeZ * j - 2f, i * sizeX - 2 * sizeX), modelMatrix);
-        return modelMatrix;
-    }
-
-    private Mat4 getMforOutside() {
-        float sizeX = 18f;
-        float sizeZ = 12f;
-        Mat4 modelMatrix = new Mat4(1);
-        modelMatrix = Mat4.multiply(Mat4Transform.scale(sizeX, 1f, sizeZ), modelMatrix);
-        modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundY(90), modelMatrix);
-        modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundZ(-90), modelMatrix);
-        modelMatrix = Mat4.multiply(Mat4Transform.translate(-11f, sizeZ / 2, 0), modelMatrix);
         return modelMatrix;
     }
 
