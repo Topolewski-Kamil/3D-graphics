@@ -3,17 +3,17 @@ import gmaths.Mat4;
 import gmaths.Mat4Transform;
 import gmaths.Vec3;
 
-public class Robot {
+class Robot {
 
-    public SGNode robotRoot;
+    SGNode robotRoot;
     private TransformNode rotateUpperLip, rotateLowerLip, robotMoveTranslate, leanBody, turnHead, rotateRightPupil, rotateLeftPupil;
-    public Model sphereYellow, sphereWhite, sphereBlack,sphereOrange;
-    GL3 gl;
-    Camera camera;
+    Model sphereYellow, sphereWhite, sphereBlack,sphereOrange;
+    private GL3 gl;
+    private Camera camera;
     private Light swingingLight, generalLight1, generalLight2;
 
 
-    public Robot(GL3 gl, Camera camera, Light swingingLight, Light generalLight1, Light generalLight2){
+    Robot(GL3 gl, Camera camera, Light swingingLight, Light generalLight1, Light generalLight2){
         this.gl = gl;
         this.camera = camera;
         this.swingingLight = swingingLight;
@@ -22,7 +22,7 @@ public class Robot {
         buildRobot();
     }
 
-    public void buildRobot(){
+    private void buildRobot(){
         Mat4 initTranslate = Mat4Transform.translate(0, 0.5f, 0);
         Shader shaderCube = new Shader(gl, "vs_cube_04.txt", "fs_cube_04.txt");
         Material matt = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 32.0f);
@@ -183,7 +183,7 @@ public class Robot {
     /*
   Animates robot to go around in circle and stops at poses 1-5
  */
-    public void animateRobot() {
+    void animateRobot() {
         animationTime = getSeconds()- appStartTime - timeDelay; // keep a delay on animation timer
 
         // dont change the pose until 2 seconds elapse
@@ -232,7 +232,7 @@ public class Robot {
         leanBody.update();
     }
 
-    public void translateToPose1(){
+    void translateToPose1(){
         Museum_GLEventListener.moveAnimation = false;
         resetPose();
         Mat4 modelMatrix = Mat4.multiply(Mat4Transform.translate(0, 0, -5), Mat4Transform.rotateAroundY(0));
@@ -241,7 +241,7 @@ public class Robot {
         headRotate(0);
     }
 
-    public void translateToPose2(){
+    void translateToPose2(){
         Museum_GLEventListener.moveAnimation = false;
         resetPose();
         Mat4 modelMatrix = Mat4.multiply(Mat4Transform.translate(4,0, -3),Mat4Transform.rotateAroundY(180));
@@ -251,7 +251,7 @@ public class Robot {
         robotMoveTranslate.update();
     }
 
-    public void translateToPose3(){
+    void translateToPose3(){
         Museum_GLEventListener.moveAnimation = false;
         resetPose();
         Mat4 modelMatrix = Mat4.multiply(Mat4Transform.translate(5,0, 0),Mat4Transform.rotateAroundY(90));
@@ -260,7 +260,7 @@ public class Robot {
         headRotate(60);
     }
 
-    public void translateToPose4(){
+    void translateToPose4(){
         Museum_GLEventListener.moveAnimation = false;
         resetPose();
         Mat4 modelMatrix = Mat4.multiply(Mat4Transform.translate(0, 0, 5), Mat4Transform.rotateAroundY(180));
@@ -271,7 +271,7 @@ public class Robot {
         robotMoveTranslate.update();
     }
 
-    public void translateToPose5(){
+    void translateToPose5(){
         Museum_GLEventListener.moveAnimation = false;
         resetPose();
         Mat4 modelMatrix = Mat4.multiply(Mat4Transform.translate(-5,0, 0),Mat4Transform.rotateAroundY(-90));
@@ -280,7 +280,7 @@ public class Robot {
         headRotate(-30);
     }
 
-    public void updateMouth() {
+    void updateMouth() {
         double elapsedTime = getSeconds()- appStartTime;
         float rotateAngle = 10f * (float)Math.sin(elapsedTime*5);
         rotateUpperLip.setTransform(Mat4Transform.rotateAroundX(rotateAngle));
@@ -289,7 +289,7 @@ public class Robot {
         rotateLowerLip.update();
     }
 
-    public void updatePupils() {
+    void updatePupils() {
         double elapsedTime = getSeconds()- appStartTime;
         float x = 0.03f * (float)(Math.cos(Math.toRadians(elapsedTime*200)));
         float y = 0.03f * (float)(Math.sin(Math.toRadians(elapsedTime*200)));
@@ -299,6 +299,7 @@ public class Robot {
         rotateLeftPupil.update();
     }
 
+    // TIMING VAR
     private double appStartTime;
     private boolean keepPose;
     private double time2;
