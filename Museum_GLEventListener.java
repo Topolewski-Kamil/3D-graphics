@@ -11,7 +11,7 @@ public class Museum_GLEventListener implements GLEventListener {
 
     public Museum_GLEventListener(Camera camera) {
         this.camera = camera;
-        this.camera.setPosition(new Vec3(4f, 12f, 18f));
+        this.camera.setPosition(new Vec3(4f, 14f, 12f));
     }
 
     /**
@@ -30,6 +30,7 @@ public class Museum_GLEventListener implements GLEventListener {
         gl.glCullFace(GL.GL_BACK);   // default is 'back', assuming CCW
         initialise(gl);
         appStartTime = getSeconds();
+        elapsedTime2 = getSeconds();
     }
 
     /**
@@ -80,7 +81,7 @@ public class Museum_GLEventListener implements GLEventListener {
 
 
     /* ON/OFF for lights and animations */
-    private boolean faceAnimation, moveAnimation, light1on, light2on, spotLight;
+    private boolean faceAnimation = true, moveAnimation, light1on, light2on, spotLight;
     void changeFaceAnimation() {
         this.faceAnimation = !faceAnimation;
     }
@@ -107,7 +108,7 @@ public class Museum_GLEventListener implements GLEventListener {
     private Light swingingLight, generalLight1, generalLight2;
     private SGNode robotRoot;
 
-    private TransformNode rotateUpperLip, rotateLowerLip, robotMoveTranslate, leanBody, turnHead, translateRightPupilOnEye, translateLeftPupilOnEye;
+    private TransformNode rotateUpperLip, rotateLowerLip, robotMoveTranslate, leanBody, turnHead, rotateRightPupil, rotateLeftPupil;
 
     private void initialise(GL3 gl) {
         int[] floorWood = TextureLibrary.loadTexture(gl, "textures/wood.jpg");
@@ -179,7 +180,7 @@ public class Museum_GLEventListener implements GLEventListener {
         // mobile phone
         modelMatrix = Mat4.multiply(Mat4Transform.scale(2, 4, 0.5f), initTranslate);
         modelMatrix = Mat4.multiply(Mat4Transform.translate(5, 1, -6), modelMatrix);
-        mobilePhone = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, shiny, modelMatrix, phone, phoneScreen);
+        mobilePhone = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, shiny, modelMatrix, phone, phoneScreen,phoneScreen);
 
         // stand egg
         modelMatrix = Mat4.multiply(Mat4Transform.scale(3, 1, 3), initTranslate);
@@ -294,12 +295,6 @@ public class Museum_GLEventListener implements GLEventListener {
         m = Mat4Transform.translate(-0.2f,headScale/2, headScale/2.5f);
         TransformNode translateLeftEyeOnHead = new TransformNode("translate(0,bodyY,0)", m);
 
-        m = Mat4Transform.translate(0,eyeScale/4 , 0.15f);
-        translateRightPupilOnEye = new TransformNode("translate(0,bodyY,0)", m);
-
-        m = Mat4Transform.translate(0,eyeScale/4 , 0.15f);
-        translateLeftPupilOnEye = new TransformNode("translate(0,bodyY,0)", m);
-
         m = Mat4Transform.translate(0,headScale/2.5f, headScale/2);
         TransformNode translateMouth = new TransformNode("translate(0,bodyY,0)", m);
 
@@ -308,10 +303,12 @@ public class Museum_GLEventListener implements GLEventListener {
 
         /* robot actions */
         robotMoveTranslate = new TransformNode("robot transform",Mat4Transform.translate(0,0,-5));
-        rotateUpperLip = new TransformNode("rotate upper lip", Mat4Transform.rotateAroundX(-10));
-        rotateLowerLip = new TransformNode("rotate upper lip", Mat4Transform.rotateAroundX(10));
         leanBody = new TransformNode("lean forward",Mat4Transform.rotateAroundX(0));
         turnHead = new TransformNode("lean forward",Mat4Transform.rotateAroundZ(0));
+        rotateUpperLip = new TransformNode("rotate upper lip", Mat4Transform.rotateAroundX(-10));
+        rotateLowerLip = new TransformNode("rotate upper lip", Mat4Transform.rotateAroundX(10));
+        rotateRightPupil = new TransformNode("translate(0,bodyY,0)", Mat4Transform.translate(0,eyeScale/4 , 0.15f));
+        rotateLeftPupil = new TransformNode("translate(0,bodyY,0)", Mat4Transform.translate(0,eyeScale/4 , 0.15f));
 
         /* robot scene graph */
         robotRoot.addChild(robotMoveTranslate);
@@ -334,16 +331,16 @@ public class Museum_GLEventListener implements GLEventListener {
                                                 eyeLeft.addChild(eyeLeftTransform);
                                                     eyeLeftTransform.addChild(eyeLeftShape);
                                                 eyeLeft.addChild(pupilLeft);
-                                                    pupilLeft.addChild(translateLeftPupilOnEye);
-                                                        translateLeftPupilOnEye.addChild(pupilLeftTransform);
+                                                    pupilLeft.addChild(rotateLeftPupil);
+                                                        rotateLeftPupil.addChild(pupilLeftTransform);
                                                             pupilLeftTransform.addChild(pupilLeftShape);
                                     head.addChild(translateRightEyeOnHead);
                                         translateRightEyeOnHead.addChild(eyeRight);
                                             eyeRight.addChild(eyeRightTransform);
                                                 eyeRightTransform.addChild(eyeRightShape);
                                     eyeRight.addChild(pupilRight);
-                                        pupilRight.addChild(translateRightPupilOnEye);
-                                            translateRightPupilOnEye.addChild(pupilRightTransform);
+                                        pupilRight.addChild(rotateRightPupil);
+                                            rotateRightPupil.addChild(pupilRightTransform);
                                                 pupilRightTransform.addChild(pupilRightShape);
                                     head.addChild(upperMouth);
                                         upperMouth.addChild(translateMouth);
@@ -400,8 +397,6 @@ public class Museum_GLEventListener implements GLEventListener {
         if (faceAnimation){
             updateMouth();
             updatePupils();
-            lookUp();
-            translateToPose5();
         }
 
         if (light1on) generalLight1.switchOffLight();
@@ -414,35 +409,106 @@ public class Museum_GLEventListener implements GLEventListener {
         else swingingLight.switchOnLight();
 
         if(moveAnimation) animateRobot();
-
-
         robotRoot.draw(gl);
     }
 
 
 
     private void animateRobot() {
-        double elapsedTime = getSeconds()- appStartTime;
-        float x = 5.0f*(float)(Math.sin(Math.toRadians(elapsedTime*50)));
-        float z = 5.0f*(float)(Math.cos(Math.toRadians(elapsedTime*50)));
-        System.out.println("x " + x + " z " + z);
-        // pose 5
-        if (x < -4.9f && x > -5f && z > 0.3 && z <  0.4){
-            moveAnimation = false;
+        elapsedTime2 = getSeconds()- appStartTime - diff;
+        elapsedTime3 = getSeconds()- appStartTime - diff;
+
+        if (elapsedTime2 - time2 >= 2.1) {
+            keepPose = false;
+        } else {
+            return;
         }
-        robotMoveTranslate.setTransform(Mat4Transform.translate(x,0,z));
-        robotMoveTranslate.update();
+        float x = 5.0f*(float)(Math.sin(Math.toRadians(elapsedTime2*50)));
+        float z = 5.0f*(float)(Math.cos(Math.toRadians(elapsedTime2*50)));
+
+        if ((x < -4.8f && x > -5f && z > 0.3 && z <  0.5)){
+            translateToPose5();
+        } else if ((x < 4.4 && x > 4.2 && z > -2.5 && z < -2.3)){
+            translateToPose2();
+        } else if ((x < 0.1 && x > -0.1 && z > -5.1 && z < -4.9)){
+            translateToPose1();
+        } else if ((x < 5.1 && x > 4.9 && z > -0.1 && z < 0.1)){
+            translateToPose3();
+        } else if ((x < 0.1 && x > -0.1 && z < 5.1 && z > 4.9)){
+            translateToPose4();
+        } else {
+            resetPose();
+            robotMoveTranslate.setTransform(Mat4Transform.translate(x,0,z));
+            robotMoveTranslate.update();
+            return;
+        }
+
+        if (!keepPose){
+            diff += 2;
+            time2 = elapsedTime2- 2;
+        }
+        keepPose = true;
+        moveAnimation = true;
+
     }
 
-    private void lookUp() {
-        turnHead.setTransform(Mat4Transform.rotateAroundX(-30));
+    private void headRotate(float angle) {
+        turnHead.setTransform(Mat4Transform.rotateAroundX(angle));
         turnHead.update();
     }
 
-    private void translateToPose5(){
+    private void resetPose(){
+        headRotate(0);
+        leanBody.setTransform(Mat4Transform.rotateAroundX(0));
+        leanBody.update();
+    }
+
+    public void translateToPose1(){
+        moveAnimation = false;
+        resetPose();
+        Mat4 modelMatrix = Mat4.multiply(Mat4Transform.translate(0, 0, -5), Mat4Transform.rotateAroundY(0));
+        robotMoveTranslate.setTransform(modelMatrix);
+        robotMoveTranslate.update();
+        headRotate(0);
+    }
+
+    public void translateToPose2(){
+        moveAnimation = false;
+        resetPose();
+        Mat4 modelMatrix = Mat4.multiply(Mat4Transform.translate(4,0, -3),Mat4Transform.rotateAroundY(180));
+        leanBody.setTransform(Mat4Transform.rotateAroundZ(25));
+        turnHead.setTransform(Mat4Transform.rotateAroundZ(-20));
+        robotMoveTranslate.setTransform(modelMatrix);
+        robotMoveTranslate.update();
+    }
+
+    public void translateToPose3(){
+        moveAnimation = false;
+        resetPose();
+        Mat4 modelMatrix = Mat4.multiply(Mat4Transform.translate(5,0, 0),Mat4Transform.rotateAroundY(90));
+        robotMoveTranslate.setTransform(modelMatrix);
+        robotMoveTranslate.update();
+        headRotate(60);
+    }
+
+    public void translateToPose4(){
+        moveAnimation = false;
+        resetPose();
+        Mat4 modelMatrix = Mat4.multiply(Mat4Transform.translate(0, 0, 5), Mat4Transform.rotateAroundY(180));
+        leanBody.setTransform(Mat4Transform.rotateAroundX(30));
+        turnHead.setTransform(Mat4.multiply(Mat4Transform.rotateAroundX(-30), Mat4Transform.rotateAroundZ(-30)));
+        turnHead.update();
+        robotMoveTranslate.setTransform(modelMatrix);
+        robotMoveTranslate.update();
+    }
+
+    public void translateToPose5(){
+        moveAnimation = false;
+        resetPose();
         Mat4 modelMatrix = Mat4.multiply(Mat4Transform.translate(-5,0, 0),Mat4Transform.rotateAroundY(-90));
         robotMoveTranslate.setTransform(modelMatrix);
         robotMoveTranslate.update();
+        headRotate(-30);
     }
 
     private void updateMouth() {
@@ -458,10 +524,10 @@ public class Museum_GLEventListener implements GLEventListener {
         double elapsedTime = getSeconds()- appStartTime;
         float x = 0.03f * (float)(Math.cos(Math.toRadians(elapsedTime*200)));
         float y = 0.03f * (float)(Math.sin(Math.toRadians(elapsedTime*200)));
-        translateRightPupilOnEye.setTransform(Mat4Transform.translate(x,0.1f + y,0.2f));
-        translateRightPupilOnEye.update();
-        translateLeftPupilOnEye.setTransform(Mat4Transform.translate(x,-y + 0.1f,0.2f));
-        translateLeftPupilOnEye.update();
+        rotateRightPupil.setTransform(Mat4Transform.translate(x,0.1f + y,0.2f));
+        rotateRightPupil.update();
+        rotateLeftPupil.setTransform(Mat4Transform.translate(x,-y + 0.1f,0.2f));
+        rotateLeftPupil.update();
     }
 
     private Vec3 getSwingLightPosition() {
@@ -545,6 +611,11 @@ public class Museum_GLEventListener implements GLEventListener {
     * @author Dr Steve Maddoc
      */
     private double appStartTime;
+    private boolean keepPose;
+    private double time2;
+    private double diff = 0;
+    private double elapsedTime2;
+    private double elapsedTime3;
     private double getSeconds() {
         return System.currentTimeMillis() / 1000.0;
     }

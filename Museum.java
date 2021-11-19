@@ -68,6 +68,22 @@ public class Museum extends JFrame implements ActionListener {
       b = new JButton("spotlight");
       b.addActionListener(this);
       p.add(b);
+      b = new JButton("pose 1");
+      b.addActionListener(this);
+      p.add(b);
+      b = new JButton("pose 2");
+      b.addActionListener(this);
+      p.add(b);
+      b = new JButton("pose 3");
+      b.addActionListener(this);
+      p.add(b);
+      b = new JButton("pose 4");
+      b.addActionListener(this);
+      p.add(b);
+      b = new JButton("pose 5");
+      b.addActionListener(this);
+      p.add(b);
+
     this.add(p, BorderLayout.SOUTH);
     
     addWindowListener(new WindowAdapter() {
@@ -101,6 +117,21 @@ public class Museum extends JFrame implements ActionListener {
     }
     else if (e.getActionCommand().equalsIgnoreCase("spotlight")) {
       glEventListener.changeSpotLight();
+    }
+    else if (e.getActionCommand().equalsIgnoreCase("pose 1")) {
+      glEventListener.translateToPose1();
+    }
+    else if (e.getActionCommand().equalsIgnoreCase("pose 2")) {
+      glEventListener.translateToPose2();
+    }
+    else if (e.getActionCommand().equalsIgnoreCase("pose 3")) {
+      glEventListener.translateToPose3();
+    }
+    else if (e.getActionCommand().equalsIgnoreCase("pose 4")) {
+      glEventListener.translateToPose4();
+    }
+    else if (e.getActionCommand().equalsIgnoreCase("pose 5")) {
+      glEventListener.translateToPose5();
     }
     else if(e.getActionCommand().equalsIgnoreCase("quit"))
       System.exit(0);
