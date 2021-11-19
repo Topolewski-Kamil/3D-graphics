@@ -9,7 +9,7 @@ import java.time.LocalTime;
  */
 public class Museum_GLEventListener implements GLEventListener {
 
-    public Museum_GLEventListener(Camera camera) {
+    Museum_GLEventListener(Camera camera) {
         this.camera = camera;
         this.camera.setPosition(new Vec3(4f, 14f, 12f));
     }
@@ -30,7 +30,6 @@ public class Museum_GLEventListener implements GLEventListener {
         gl.glCullFace(GL.GL_BACK);   // default is 'back', assuming CCW
         initialise(gl);
         appStartTime = getSeconds();
-        animationTime = getSeconds();
     }
 
     /**
@@ -57,31 +56,30 @@ public class Museum_GLEventListener implements GLEventListener {
     public void dispose(GLAutoDrawable drawable) {
         GL3 gl = drawable.getGL().getGL3();
         swingingLight.dispose(gl);
-        floor.dispose(gl);
         generalLight1.dispose(gl);
         generalLight2.dispose(gl);
+        floor.dispose(gl);
         wallBack.dispose(gl);
         wallLeft.dispose(gl);
         outside.dispose(gl);
-        standPhone.dispose(gl);
         lightTop.dispose(gl);
-        wallLeft.dispose(gl);
-        standEgg.dispose(gl);
-        mobilePhone.dispose(gl);
-        egg.dispose(gl);
-        lightCase.dispose(gl);
         lampTop.dispose(gl);
         lampMid.dispose(gl);
         lampBtm.dispose(gl);
-        sphereYellow.dispose(gl);
-        sphereWhite.dispose(gl);
-        sphereBlack.dispose(gl);
-        sphereOrange.dispose(gl);
+        mobilePhone.dispose(gl);
+        standPhone.dispose(gl);
+        standEgg.dispose(gl);
+        egg.dispose(gl);
+        lightCase.dispose(gl);
+        roboDuck.sphereYellow.dispose(gl);
+        roboDuck.sphereWhite.dispose(gl);
+        roboDuck.sphereBlack.dispose(gl);
+        roboDuck.sphereOrange.dispose(gl);
     }
 
-
     /* ON/OFF for lights and animations */
-    private boolean faceAnimation = true, moveAnimation, light1on, light2on, spotLight;
+    private boolean faceAnimation = true, light1on, light2on, spotLight;
+    static boolean moveAnimation;
     void changeFaceAnimation() {
         this.faceAnimation = !faceAnimation;
     }
@@ -95,7 +93,7 @@ public class Museum_GLEventListener implements GLEventListener {
         this.spotLight = !spotLight;
     }
     void changeMoveAnimation() {
-        this.moveAnimation = !moveAnimation;
+        moveAnimation = !moveAnimation;
     }
 
     // ***************************************************
@@ -104,10 +102,9 @@ public class Museum_GLEventListener implements GLEventListener {
      */
     private Camera camera;
     private Model floor, wallBack, wallLeft, outside, standPhone, lightTop, standEgg, mobilePhone, egg, lightCase, lampTop,
-            lampMid, lampBtm, sphereYellow, sphereWhite, sphereBlack,sphereOrange;
+            lampMid, lampBtm;
     private Light swingingLight, generalLight1, generalLight2;
-    private SGNode robotRoot;
-    private Robot roboDuck;
+    Robot roboDuck;
 
 //    private TransformNode rotateUpperLip, rotateLowerLip, robotMoveTranslate, leanBody, turnHead, rotateRightPupil, rotateLeftPupil;
 
@@ -118,10 +115,7 @@ public class Museum_GLEventListener implements GLEventListener {
         int[] phoneScreen = TextureLibrary.loadTexture(gl, "textures/phone.jpg");
         int[] clouds = TextureLibrary.loadTexture(gl, "textures/cloud.jpg");
         int[] wallWhite = TextureLibrary.loadTexture(gl, "textures/wall.jpg");
-        int[] black = TextureLibrary.loadTexture(gl, "textures/black.jpg");
-        int[] yellow = TextureLibrary.loadTexture(gl, "textures/yellow.jpg");
         int[] wallWithDoor = TextureLibrary.loadTexture(gl, "textures/door.jpg");
-        int[] orange = TextureLibrary.loadTexture(gl, "textures/orange.jpg");
         int[] white = TextureLibrary.loadTexture(gl, "textures/white.jpg");
         int[] moon = TextureLibrary.loadTexture(gl, "textures/moon.jpg");
         int[] eggBlue = TextureLibrary.loadTexture(gl, "textures/egg_blue.jpg");
@@ -141,8 +135,6 @@ public class Museum_GLEventListener implements GLEventListener {
 
         Material shiny = new Material(new Vec3(1.0f, 1.0f, 1.0f), new Vec3(1.0f, 1.0f, 1.0f), new Vec3(1.0f, 1.0f, 1.0f), 32.0f);
         Material whiteRubber = new Material(new Vec3(0.8f, 0.8f, 0.8f), new Vec3(0.5f, 0.5f, 0.5f), new Vec3(0.7f, 0.7f, 0.7f), 0.778125f);
-        Material polishedBronze = new Material(new Vec3(0.25f, 0.148f, 0.06475f), new Vec3(0.4f, 0.2368f, 0.1036f), new Vec3(0.774597f, 0.458561f, 0.200621f), 76.8f);
-        Material yellowCopper = new Material(new Vec3(0.19125f, 0.0735f, 0.0225f), new Vec3(0.7038f, 0.27048f, 0.0828f), new Vec3(0.256777f, 0.137622f, 0.086014f), 0.778125f);
         Material matt = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 32.0f);
 
         Mesh twoTriangles = new Mesh(gl, TwoTriangles.vertices.clone(), TwoTriangles.indices.clone());
@@ -214,6 +206,7 @@ public class Museum_GLEventListener implements GLEventListener {
         modelMatrix = Mat4.multiply(Mat4Transform.translate(8, 0, 0), modelMatrix);
         lampBtm = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, matt, modelMatrix, cube, woodBox, woodBoxSpecular);
 
+        // robot init
         roboDuck = new Robot(gl, camera, swingingLight, generalLight1, generalLight2);
     }
 
@@ -249,11 +242,6 @@ public class Museum_GLEventListener implements GLEventListener {
         lampMid.render(gl);
         lampBtm.render(gl);
 
-        if (faceAnimation){
-            roboDuck.updateMouth();
-            roboDuck.updatePupils();
-        }
-
         if (light1on) generalLight1.switchOffLight();
         else generalLight1.switchOnLight();
 
@@ -265,6 +253,10 @@ public class Museum_GLEventListener implements GLEventListener {
 
         if(moveAnimation) roboDuck.animateRobot();
 
+        if (faceAnimation){
+            roboDuck.updateMouth();
+            roboDuck.updatePupils();
+        }
         roboDuck.robotRoot.draw(gl);
     }
 
@@ -349,10 +341,6 @@ public class Museum_GLEventListener implements GLEventListener {
     * @author Dr Steve Maddoc
      */
     private double appStartTime;
-    private boolean keepPose;
-    private double time2;
-    private double timeDelay = 0;
-    private double animationTime;
     private double getSeconds() {
         return System.currentTimeMillis() / 1000.0;
     }

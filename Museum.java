@@ -118,21 +118,21 @@ public class Museum extends JFrame implements ActionListener {
     else if (e.getActionCommand().equalsIgnoreCase("spotlight")) {
       glEventListener.changeSpotLight();
     }
-//    else if (e.getActionCommand().equalsIgnoreCase("pose 1")) {
-//      glEventListener.translateToPose1();
-//    }
-//    else if (e.getActionCommand().equalsIgnoreCase("pose 2")) {
-//      glEventListener.translateToPose2();
-//    }
-//    else if (e.getActionCommand().equalsIgnoreCase("pose 3")) {
-//      glEventListener.translateToPose3();
-//    }
-//    else if (e.getActionCommand().equalsIgnoreCase("pose 4")) {
-//      glEventListener.translateToPose4();
-//    }
-//    else if (e.getActionCommand().equalsIgnoreCase("pose 5")) {
-//      glEventListener.translateToPose5();
-//    }
+    else if (e.getActionCommand().equalsIgnoreCase("pose 1")) {
+      glEventListener.roboDuck.translateToPose1();
+    }
+    else if (e.getActionCommand().equalsIgnoreCase("pose 2")) {
+      glEventListener.roboDuck.translateToPose2();
+    }
+    else if (e.getActionCommand().equalsIgnoreCase("pose 3")) {
+      glEventListener.roboDuck.translateToPose3();
+    }
+    else if (e.getActionCommand().equalsIgnoreCase("pose 4")) {
+      glEventListener.roboDuck.translateToPose4();
+    }
+    else if (e.getActionCommand().equalsIgnoreCase("pose 5")) {
+      glEventListener.roboDuck.translateToPose5();
+    }
     else if(e.getActionCommand().equalsIgnoreCase("quit"))
       System.exit(0);
   }

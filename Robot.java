@@ -7,7 +7,7 @@ public class Robot {
 
     public SGNode robotRoot;
     private TransformNode rotateUpperLip, rotateLowerLip, robotMoveTranslate, leanBody, turnHead, rotateRightPupil, rotateLeftPupil;
-    private Model sphereYellow, sphereWhite, sphereBlack,sphereOrange;
+    public Model sphereYellow, sphereWhite, sphereBlack,sphereOrange;
     GL3 gl;
     Camera camera;
     private Light swingingLight, generalLight1, generalLight2;
@@ -20,14 +20,6 @@ public class Robot {
         this.generalLight1 = generalLight1;
         this.generalLight2 = generalLight2;
         buildRobot();
-    }
-
-    private boolean faceAnimation = true, moveAnimation;
-    void changeFaceAnimation() {
-        this.faceAnimation = !faceAnimation;
-    }
-    void changeMoveAnimation() {
-        this.moveAnimation = !moveAnimation;
     }
 
     public void buildRobot(){
@@ -226,7 +218,7 @@ public class Robot {
         timeDelay += 2;
         time2 = animationTime - 2;
         keepPose = true;
-        moveAnimation = true;
+        Museum_GLEventListener.moveAnimation = true;
     }
 
     private void headRotate(float angle) {
@@ -241,7 +233,7 @@ public class Robot {
     }
 
     public void translateToPose1(){
-        moveAnimation = false;
+        Museum_GLEventListener.moveAnimation = false;
         resetPose();
         Mat4 modelMatrix = Mat4.multiply(Mat4Transform.translate(0, 0, -5), Mat4Transform.rotateAroundY(0));
         robotMoveTranslate.setTransform(modelMatrix);
@@ -250,7 +242,7 @@ public class Robot {
     }
 
     public void translateToPose2(){
-        moveAnimation = false;
+        Museum_GLEventListener.moveAnimation = false;
         resetPose();
         Mat4 modelMatrix = Mat4.multiply(Mat4Transform.translate(4,0, -3),Mat4Transform.rotateAroundY(180));
         leanBody.setTransform(Mat4Transform.rotateAroundZ(25));
@@ -260,7 +252,7 @@ public class Robot {
     }
 
     public void translateToPose3(){
-        moveAnimation = false;
+        Museum_GLEventListener.moveAnimation = false;
         resetPose();
         Mat4 modelMatrix = Mat4.multiply(Mat4Transform.translate(5,0, 0),Mat4Transform.rotateAroundY(90));
         robotMoveTranslate.setTransform(modelMatrix);
@@ -269,7 +261,7 @@ public class Robot {
     }
 
     public void translateToPose4(){
-        moveAnimation = false;
+        Museum_GLEventListener.moveAnimation = false;
         resetPose();
         Mat4 modelMatrix = Mat4.multiply(Mat4Transform.translate(0, 0, 5), Mat4Transform.rotateAroundY(180));
         leanBody.setTransform(Mat4Transform.rotateAroundX(30));
@@ -280,7 +272,7 @@ public class Robot {
     }
 
     public void translateToPose5(){
-        moveAnimation = false;
+        Museum_GLEventListener.moveAnimation = false;
         resetPose();
         Mat4 modelMatrix = Mat4.multiply(Mat4Transform.translate(-5,0, 0),Mat4Transform.rotateAroundY(-90));
         robotMoveTranslate.setTransform(modelMatrix);
