@@ -64,8 +64,8 @@ public class Museum_GLEventListener implements GLEventListener {
         lampTop.dispose(gl);
         lampMid.dispose(gl);
         lampBtm.dispose(gl);
-        mobilePhone.dispose(gl);
-        standPhone.dispose(gl);
+        phone.mobilePhone.dispose(gl);
+        phone.standPhone.dispose(gl);
         egg.standEgg.dispose(gl);
         egg.eggFig.dispose(gl);
         lightCase.dispose(gl);
@@ -99,17 +99,17 @@ public class Museum_GLEventListener implements GLEventListener {
      * Now define all the methods to handle the scene.
      */
     private Camera camera;
-    private Model standPhone, lightTop, mobilePhone, lightCase, lampTop,
+    private Model lightTop, lightCase, lampTop,
             lampMid, lampBtm;
     private Light swingingLight, generalLight1, generalLight2;
     Robot roboDuck;
     private Room room;
     private Egg egg;
+    private Phone phone;
 
     private void initialise(GL3 gl) {
         int[] woodBox = TextureLibrary.loadTexture(gl, "textures/wooden_box.jpg");
         int[] woodBoxSpecular = TextureLibrary.loadTexture(gl, "textures/wooden_box_specular.jpg");
-        int[] phoneScreen = TextureLibrary.loadTexture(gl, "textures/phone.jpg");
         int[] white = TextureLibrary.loadTexture(gl, "textures/white.jpg");
 
         swingingLight = new Light(gl);
@@ -121,27 +121,16 @@ public class Museum_GLEventListener implements GLEventListener {
         generalLight2 = new Light(gl);
         generalLight2.setCamera(camera);
 
-        Mat4 modelMatrix;
+        Mat4 modelMatrix = Mat4Transform.translate(0, 0, 0);
         Mat4 initTranslate = Mat4Transform.translate(0, 0.5f, 0);
 
         Material shiny = new Material(new Vec3(1.0f, 1.0f, 1.0f), new Vec3(1.0f, 1.0f, 1.0f), new Vec3(1.0f, 1.0f, 1.0f), 32.0f);
         Material matt = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 32.0f);
 
         Mesh cube = new Mesh(gl, Cube.vertices.clone(), Cube.indices.clone());
-        Mesh phone = new Mesh(gl, Phone.vertices.clone(), Phone.indices.clone());
         Mesh sphere = new Mesh(gl, Sphere.vertices.clone(), Sphere.indices.clone());
 
         Shader shaderCube = new Shader(gl, "vs_cube_04.txt", "fs_cube_04.txt");
-
-        // stand phone
-        modelMatrix = Mat4.multiply(Mat4Transform.scale(3, 1, 3), initTranslate);
-        modelMatrix = Mat4.multiply(Mat4Transform.translate(5, 0, -6), modelMatrix);
-        standPhone = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, matt, modelMatrix, cube, woodBox, woodBoxSpecular);
-
-        // mobile phone
-        modelMatrix = Mat4.multiply(Mat4Transform.scale(2, 4, 0.5f), initTranslate);
-        modelMatrix = Mat4.multiply(Mat4Transform.translate(5, 1, -6), modelMatrix);
-        mobilePhone = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, shiny, modelMatrix, phone, phoneScreen,phoneScreen);
 
         // light bulb
         lightTop = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, shiny, modelMatrix, sphere, white);
@@ -173,6 +162,9 @@ public class Museum_GLEventListener implements GLEventListener {
 
         // egg init
         egg =  new Egg(gl, camera, swingingLight, generalLight1, generalLight2);
+
+        //phone init
+        phone = new Phone(gl, camera, swingingLight, generalLight1, generalLight2);
     }
 
     private void render(GL3 gl) {
@@ -197,8 +189,8 @@ public class Museum_GLEventListener implements GLEventListener {
 
         egg.standEgg.render(gl);
         egg.eggFig.render(gl);
-        standPhone.render(gl);
-        mobilePhone.render(gl);
+        phone.standPhone.render(gl);
+        phone.mobilePhone.render(gl);
         lightTop.render(gl);
         lightTop.setModelMatrix(getMforLamp());
         lightCase.render(gl);

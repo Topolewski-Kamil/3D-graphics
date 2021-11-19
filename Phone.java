@@ -1,56 +1,45 @@
-/**
- * @author Dr Steve Maddock
- * @author Kamil Topolewski - texture corrdinates alterations
- */
-public final class Phone {
-  
-  // ***************************************************
-  /* THE DATA
-   */
-  // anticlockwise/counterclockwise ordering
-  
-   public static final float[] vertices = new float[] {  // x,y,z, nx,ny,nz, s,t
-      -0.5f, -0.5f, -0.5f,  -1, 0, 0,  0.0f, 0.0f,  // 0
-      -0.5f, -0.5f,  0.5f,  -1, 0, 0,  0.0f, 0.0f,  // 1
-      -0.5f,  0.5f, -0.5f,  -1, 0, 0,  0.0f, 0.0f,  // 2
-      -0.5f,  0.5f,  0.5f,  -1, 0, 0,  0.0f, 0.0f,  // 3
-       0.5f, -0.5f, -0.5f,   1, 0, 0,  0.0f, 0.0f,  // 4
-       0.5f, -0.5f,  0.5f,   1, 0, 0,  0.0f, 0.0f,  // 5
-       0.5f,  0.5f, -0.5f,   1, 0, 0,  0.0f, 0.0f,  // 6
-       0.5f,  0.5f,  0.5f,   1, 0, 0,  0.0f, 0.0f,  // 7
+import com.jogamp.opengl.GL3;
+import gmaths.Mat4;
+import gmaths.Mat4Transform;
+import gmaths.Vec3;
 
-       -0.5f, -0.5f, -0.5f,  0,0,-1,  0.0f, 0.0f,  // 8
-       -0.5f, -0.5f,  0.5f,  0,0,1,   0.0f, 0.0f,  // 9
-       -0.5f,  0.5f, -0.5f,  0,0,-1,  0.0f, 0.0f,  // 10
-       -0.5f,  0.5f,  0.5f,  0,0,1,   0.0f, 1.0f,  // 11
-       0.5f, -0.5f, -0.5f,  0,0,-1,  0.0f, 0.0f,  // 12
-       0.5f, -0.5f,  0.5f,  0,0,1,   1.0f, 0.0f,  // 13
-       0.5f,  0.5f, -0.5f,  0,0,-1,  0.0f, 1.0f,  // 14
-       0.5f,  0.5f,  0.5f,  0,0,1,   1.0f, 1.0f,  // 15
+class Phone {
 
-      -0.5f, -0.5f, -0.5f,  0,-1,0,  0.0f, 0.0f,  // 16
-      -0.5f, -0.5f,  0.5f,  0,-1,0,  0.0f, 0.0f,  // 17
-      -0.5f,  0.5f, -0.5f,  0,1,0,   0.0f, 0.0f,  // 18
-      -0.5f,  0.5f,  0.5f,  0,1,0,   0.0f, 0.0f,  // 19
-       0.5f, -0.5f, -0.5f,  0,-1,0,  0.0f, 0.0f,  // 20
-       0.5f, -0.5f,  0.5f,  0,-1,0,  0.0f, 0.0f,  // 21
-       0.5f,  0.5f, -0.5f,  0,1,0,   0.0f, 0.0f,  // 22
-       0.5f,  0.5f,  0.5f,  0,1,0,   0.0f, 0.0f   // 23
-   };
-     
-   public static final int[] indices =  new int[] {
-      0,1,3, // x -ve 
-      3,2,0, // x -ve
-      4,6,7, // x +ve
-      7,5,4, // x +ve
-      9,13,15, // z +ve
-      15,11,9, // z +ve
-      8,10,14, // z -ve
-      14,12,8, // z -ve
-      16,20,21, // y -ve
-      21,17,16, // y -ve
-      23,22,18, // y +ve
-      18,19,23  // y +ve
-  };
+    private GL3 gl;
+    private Camera camera;
+    private Light swingingLight, generalLight1, generalLight2;
+    Model standEgg, eggFig;
+    Model standPhone, mobilePhone;
+
+    Phone(GL3 gl, Camera camera, Light swingingLight, Light generalLight1, Light generalLight2) {
+        this.gl = gl;
+        this.camera = camera;
+        this.swingingLight = swingingLight;
+        this.generalLight1 = generalLight1;
+        this.generalLight2 = generalLight2;
+        buildPhone();
+    }
+
+    private void buildPhone() {
+        Shader shaderCube = new Shader(gl, "vs_cube_04.txt", "fs_cube_04.txt");
+        Mesh cube = new Mesh(gl, Cube.vertices.clone(), Cube.indices.clone());
+        Mat4 initTranslate = Mat4Transform.translate(0, 0.5f, 0);
+        int[] woodBox = TextureLibrary.loadTexture(gl, "textures/wooden_box.jpg");
+        int[] woodBoxSpecular = TextureLibrary.loadTexture(gl, "textures/wooden_box_specular.jpg");
+        int[] phoneScreen = TextureLibrary.loadTexture(gl, "textures/phone.jpg");
+        Material matt = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 32.0f);
+        Material shiny = new Material(new Vec3(1.0f, 1.0f, 1.0f), new Vec3(1.0f, 1.0f, 1.0f), new Vec3(1.0f, 1.0f, 1.0f), 32.0f);
+        Mesh phone = new Mesh(gl, Cube2.vertices.clone(), Cube2.indices.clone());
+
+        // stand phone
+        Mat4 modelMatrix = Mat4.multiply(Mat4Transform.scale(3, 1, 3), initTranslate);
+        modelMatrix = Mat4.multiply(Mat4Transform.translate(5, 0, -6), modelMatrix);
+        standPhone = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, matt, modelMatrix, cube, woodBox, woodBoxSpecular);
+
+        // mobile phone
+        modelMatrix = Mat4.multiply(Mat4Transform.scale(2, 4, 0.5f), initTranslate);
+        modelMatrix = Mat4.multiply(Mat4Transform.translate(5, 1, -6), modelMatrix);
+        mobilePhone = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, shiny, modelMatrix, phone, phoneScreen, phoneScreen);
+    }
 
 }
