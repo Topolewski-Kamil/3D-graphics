@@ -22,7 +22,7 @@ public class Light {
     shader = new Shader(gl, "vs_light_01.txt", "fs_light_01.txt");
     fillBuffers(gl);
   }
-  
+
   public void setPosition(Vec3 v) {
     position.x = v.x;
     position.y = v.y;

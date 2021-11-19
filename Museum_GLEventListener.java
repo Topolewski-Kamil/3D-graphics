@@ -60,15 +60,15 @@ public class Museum_GLEventListener implements GLEventListener {
         room.wallBack.dispose(gl);
         room.wallLeft.dispose(gl);
         room.outside.dispose(gl);
-        lightTop.dispose(gl);
-        lampTop.dispose(gl);
-        lampMid.dispose(gl);
-        lampBtm.dispose(gl);
+        lightStand.lightTop.dispose(gl);
+        lightStand.lampTop.dispose(gl);
+        lightStand.lampMid.dispose(gl);
+        lightStand.lampBtm.dispose(gl);
         phone.mobilePhone.dispose(gl);
         phone.standPhone.dispose(gl);
         egg.standEgg.dispose(gl);
         egg.eggFig.dispose(gl);
-        lightCase.dispose(gl);
+        lightStand.lightCase.dispose(gl);
         roboDuck.sphereYellow.dispose(gl);
         roboDuck.sphereWhite.dispose(gl);
         roboDuck.sphereBlack.dispose(gl);
@@ -99,66 +99,32 @@ public class Museum_GLEventListener implements GLEventListener {
      * Now define all the methods to handle the scene.
      */
     private Camera camera;
-    private Model lightTop, lightCase, lampTop,
-            lampMid, lampBtm;
+
     private Light swingingLight, generalLight1, generalLight2;
     Robot roboDuck;
     private Room room;
     private Egg egg;
     private Phone phone;
+    private SpotLightStand lightStand;
 
     private void initialise(GL3 gl) {
-        int[] woodBox = TextureLibrary.loadTexture(gl, "textures/wooden_box.jpg");
-        int[] woodBoxSpecular = TextureLibrary.loadTexture(gl, "textures/wooden_box_specular.jpg");
-        int[] white = TextureLibrary.loadTexture(gl, "textures/white.jpg");
 
+        // lights
         swingingLight = new Light(gl);
         swingingLight.setCamera(camera);
-
         generalLight1 = new Light(gl);
         generalLight1.setCamera(camera);
-
         generalLight2 = new Light(gl);
         generalLight2.setCamera(camera);
-
-        Mat4 modelMatrix = Mat4Transform.translate(0, 0, 0);
-        Mat4 initTranslate = Mat4Transform.translate(0, 0.5f, 0);
-
-        Material shiny = new Material(new Vec3(1.0f, 1.0f, 1.0f), new Vec3(1.0f, 1.0f, 1.0f), new Vec3(1.0f, 1.0f, 1.0f), 32.0f);
-        Material matt = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 32.0f);
-
-        Mesh cube = new Mesh(gl, Cube.vertices.clone(), Cube.indices.clone());
-        Mesh sphere = new Mesh(gl, Sphere.vertices.clone(), Sphere.indices.clone());
-
-        Shader shaderCube = new Shader(gl, "vs_cube_04.txt", "fs_cube_04.txt");
-
-        // light bulb
-        lightTop = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, shiny, modelMatrix, sphere, white);
-
-        //light square
-        lightCase = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, matt, modelMatrix, cube, woodBox, woodBoxSpecular);
-
-        //light stand top
-        modelMatrix = Mat4.multiply(Mat4Transform.scale(0.37f, 0.2f, 1.7f), initTranslate);
-        modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundY(90), modelMatrix);
-        modelMatrix = Mat4.multiply(Mat4Transform.translate(7.54f, 4.9f, 0), modelMatrix);
-        lampTop = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, matt, modelMatrix, cube, woodBox, woodBoxSpecular);
-
-        //light stand middle
-        modelMatrix = Mat4.multiply(Mat4Transform.scale(0.25f, 5, 0.25f), initTranslate);
-        modelMatrix = Mat4.multiply(Mat4Transform.translate(8f, 0, 0), modelMatrix);
-        lampMid = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, matt, modelMatrix, cube, woodBox, woodBoxSpecular);
-
-        //light stand bottom
-        modelMatrix = Mat4.multiply(Mat4Transform.scale(0.5f, 0.15f, 0.5f), initTranslate);
-        modelMatrix = Mat4.multiply(Mat4Transform.translate(8, 0, 0), modelMatrix);
-        lampBtm = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, matt, modelMatrix, cube, woodBox, woodBoxSpecular);
 
         // room init
         room = new Room(gl, camera, swingingLight, generalLight1, generalLight2);
 
         // robot init
         roboDuck = new Robot(gl, camera, swingingLight, generalLight1, generalLight2);
+
+        //light stand init
+        lightStand = new SpotLightStand(gl, camera, swingingLight, generalLight1, generalLight2);
 
         // egg init
         egg =  new Egg(gl, camera, swingingLight, generalLight1, generalLight2);
@@ -181,7 +147,7 @@ public class Museum_GLEventListener implements GLEventListener {
         for (int i = 1; i < 4; i++) {
             for (int j = 1; j < 4; j++) {
                 if (!(i == 2 && j == 2)) {
-                    room.wallLeft.setModelMatrix(getMforLeftWall(i, j));
+                    room.wallLeft.setModelMatrix(room.getMforLeftWall(i, j));
                     room.wallLeft.render(gl);
                 }
             }
@@ -191,13 +157,13 @@ public class Museum_GLEventListener implements GLEventListener {
         egg.eggFig.render(gl);
         phone.standPhone.render(gl);
         phone.mobilePhone.render(gl);
-        lightTop.render(gl);
-        lightTop.setModelMatrix(getMforLamp());
-        lightCase.render(gl);
-        lightCase.setModelMatrix(getMforLampCase());
-        lampTop.render(gl);
-        lampMid.render(gl);
-        lampBtm.render(gl);
+        lightStand.lightTop.render(gl);
+        lightStand.lightTop.setModelMatrix(lightStand.getMforLamp());
+        lightStand.lightCase.render(gl);
+        lightStand.lightCase.setModelMatrix(lightStand.getMforLampCase());
+        lightStand.lampTop.render(gl);
+        lightStand.lampMid.render(gl);
+        lightStand.lampBtm.render(gl);
 
         if (light1on) generalLight1.switchOffLight();
         else generalLight1.switchOnLight();
@@ -232,52 +198,12 @@ public class Museum_GLEventListener implements GLEventListener {
         return new Vec3(6, 10, 6);
     }
 
-    private Mat4 getMforLeftWall(int i, int j) {
-        float sizeX = 6f;
-        float sizeZ = 4f;
-        Mat4 modelMatrix = new Mat4(1);
-        modelMatrix = Mat4.multiply(Mat4Transform.scale(sizeX, 1f, sizeZ), modelMatrix);
-        modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundY(90), modelMatrix);
-        modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundZ(-90), modelMatrix);
-        modelMatrix = Mat4.multiply(Mat4Transform.translate(-9f, sizeZ * j - 2f, i * sizeX - 2 * sizeX), modelMatrix);
-        return modelMatrix;
-    }
-
-    private Mat4 getMforLamp() {
-        double elapsedTime = getSeconds() - appStartTime;
-        float sizeX = 0.3f;
-        float sizeY = 0.5f;
-        float sizeZ = 0.3f;
-        Mat4 modelMatrix = new Mat4(1);
-        modelMatrix = Mat4.multiply(Mat4Transform.translate(0, 0.5f, 0), modelMatrix);
-        modelMatrix = Mat4.multiply(Mat4Transform.scale(sizeX, sizeY, sizeZ), modelMatrix);
-        modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundX(180), modelMatrix);
-        modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundX(20 * (float) Math.sin(elapsedTime)), modelMatrix);
-        modelMatrix = Mat4.multiply(Mat4Transform.translate(6.5f, 5, 0), modelMatrix);
-        return modelMatrix;
-    }
-
-    private Mat4 getMforLampCase() {
-        double elapsedTime = getSeconds() - appStartTime;
-        float sizeX = 0.37f;
-        float sizeY = 0.37f;
-        float sizeZ = 0.4f;
-        Mat4 modelMatrix = new Mat4(1);
-        modelMatrix = Mat4.multiply(Mat4Transform.translate(0, 0.5f, 0), modelMatrix);
-        modelMatrix = Mat4.multiply(Mat4Transform.scale(sizeX, sizeY, sizeZ), modelMatrix);
-        modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundX(180), modelMatrix);
-        modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundX(20 * (float) Math.sin(elapsedTime)), modelMatrix);
-        modelMatrix = Mat4.multiply(Mat4Transform.translate(6.5f, 5.1f, 0), modelMatrix);
-        return modelMatrix;
-    }
-
-
     // ***************************************************
     /* TIME
-    * @author Dr Steve Maddoc
+    * @author Dr Steve Maddock
      */
-    private double appStartTime;
-    private double getSeconds() {
+    static double appStartTime;
+    static double getSeconds() {
         return System.currentTimeMillis() / 1000.0;
     }
 }

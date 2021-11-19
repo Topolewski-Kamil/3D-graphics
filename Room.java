@@ -77,4 +77,15 @@ class Room {
         modelMatrix = Mat4.multiply(Mat4Transform.translate(-11f, sizeZ / 2, 0), modelMatrix);
         return modelMatrix;
     }
+
+    Mat4 getMforLeftWall(int i, int j) {
+        float sizeX = 6f;
+        float sizeZ = 4f;
+        Mat4 modelMatrix = new Mat4(1);
+        modelMatrix = Mat4.multiply(Mat4Transform.scale(sizeX, 1f, sizeZ), modelMatrix);
+        modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundY(90), modelMatrix);
+        modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundZ(-90), modelMatrix);
+        modelMatrix = Mat4.multiply(Mat4Transform.translate(-9f, sizeZ * j - 2f, i * sizeX - 2 * sizeX), modelMatrix);
+        return modelMatrix;
+    }
 }
