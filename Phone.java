@@ -2,6 +2,7 @@ import com.jogamp.opengl.GL3;
 import gmaths.Mat4;
 import gmaths.Mat4Transform;
 import gmaths.Vec3;
+
 /**
  * @author Kamil Topolewski
  */
@@ -10,7 +11,6 @@ class Phone {
     private GL3 gl;
     private Camera camera;
     private Light swingingLight, generalLight1, generalLight2;
-    Model standEgg, eggFig;
     Model standPhone, mobilePhone;
 
     Phone(GL3 gl, Camera camera, Light swingingLight, Light generalLight1, Light generalLight2) {

@@ -3,7 +3,7 @@ import com.jogamp.opengl.*;
 
 /**
  * @author Dr Steve Maddock
- * @author Kamil Topolewski (unauthored bits)
+ * @author Kamil Topolewski
  */
 public class Museum_GLEventListener implements GLEventListener {
 
@@ -12,10 +12,8 @@ public class Museum_GLEventListener implements GLEventListener {
         this.camera.setPosition(new Vec3(4f, 14f, 12f));
     }
 
-    /**
-     * Initialization
-     * @author Dr Steve Maddock
-     */
+    /* Initialization
+     * @author Dr Steve Maddock */
     public void init(GLAutoDrawable drawable) {
         GL3 gl = drawable.getGL().getGL3();
         System.err.println("Chosen GLCapabilities: " + drawable.getChosenGLCapabilities());
@@ -29,11 +27,8 @@ public class Museum_GLEventListener implements GLEventListener {
         initialise(gl);
         appStartTime = getSeconds();
     }
-
-    /**
-     * Called to indicate the drawing surface has been moved and/or resized
-     * @author Dr Steve Maddock
-     */
+    /* Called to indicate the drawing surface has been moved and/or resized
+     *  @author Dr Steve Maddock */
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
         GL3 gl = drawable.getGL().getGL3();
         gl.glViewport(x, y, width, height);
@@ -41,16 +36,14 @@ public class Museum_GLEventListener implements GLEventListener {
         camera.setPerspectiveMatrix(Mat4Transform.perspective(45, aspect));
     }
 
-    /**
-     * Draw
-     * @author Dr Steve Maddock
-     */
+    /* @author Dr Steve Maddock*/
     public void display(GLAutoDrawable drawable) {
         GL3 gl = drawable.getGL().getGL3();
         render(gl);
     }
 
-    /* Clean up memory, if necessary */
+    /* Clean up memory, if necessary
+    *  @author Kamil Topolewski */
     public void dispose(GLAutoDrawable drawable) {
         GL3 gl = drawable.getGL().getGL3();
         swingingLight.dispose(gl);
@@ -75,7 +68,8 @@ public class Museum_GLEventListener implements GLEventListener {
         roboDuck.sphereOrange.dispose(gl);
     }
 
-    /* ON/OFF for lights and animations */
+    /* ON/OFF for lights and animations
+     *  @author Kamil Topolewski */
     private boolean faceAnimation = true, light1on, light2on, spotLight;
     static boolean moveAnimation;
     void changeFaceAnimation() {
@@ -97,16 +91,18 @@ public class Museum_GLEventListener implements GLEventListener {
     // ***************************************************
     /* THE SCENE
      * Now define all the methods to handle the scene.
+     * @author Kamil Topolewski
      */
     private Camera camera;
 
-    private Light swingingLight, generalLight1, generalLight2;
     Robot roboDuck;
+    private Light swingingLight, generalLight1, generalLight2;
     private Room room;
     private Egg egg;
     private Phone phone;
     private SpotLightStand lightStand;
 
+    /* @author Kamil Topolewski */
     private void initialise(GL3 gl) {
 
         // lights
@@ -133,6 +129,7 @@ public class Museum_GLEventListener implements GLEventListener {
         phone = new Phone(gl, camera, swingingLight, generalLight1, generalLight2);
     }
 
+    /* @author Kamil Topolewski */
     private void render(GL3 gl) {
         gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
         swingingLight.setPosition(getSwingLightPosition());  // changing light position each frame
@@ -183,6 +180,7 @@ public class Museum_GLEventListener implements GLEventListener {
         roboDuck.robotRoot.draw(gl);
     }
 
+    /* @author Kamil Topolewski */
     private Vec3 getSwingLightPosition() {
         double elapsedTime = getSeconds() - appStartTime;
         float y = 0.5f * (float) (Math.sin(elapsedTime));
@@ -190,10 +188,12 @@ public class Museum_GLEventListener implements GLEventListener {
         return new Vec3(6.5f, Math.abs(y) + 3.5f, -z);
     }
 
+    /* @author Kamil Topolewski */
     private Vec3 getGeneralLightPosition1() {
         return new Vec3(-6, 10, -6);
     }
 
+    /* @author Kamil Topolewski */
     private Vec3 getGeneralLightPosition2() {
         return new Vec3(6, 10, 6);
     }

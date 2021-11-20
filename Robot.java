@@ -2,6 +2,7 @@ import com.jogamp.opengl.GL3;
 import gmaths.Mat4;
 import gmaths.Mat4Transform;
 import gmaths.Vec3;
+
 /**
  * @author Kamil Topolewski
  */
@@ -187,7 +188,7 @@ class Robot {
   Animates robot to go around in circle and stops at poses 1-5
  */
     void animateRobot() {
-        animationTime = getSeconds()- appStartTime - timeDelay; // keep a delay on animation timer
+        animationTime = getSeconds() - timeDelay; // keep a delay on animation timer
 
         // dont change the pose until 2 seconds elapse
         if (animationTime - time2 >= 2.1)
@@ -284,7 +285,7 @@ class Robot {
     }
 
     void updateMouth() {
-        double elapsedTime = getSeconds()- appStartTime;
+        double elapsedTime = getSeconds();
         float rotateAngle = 10f * (float)Math.sin(elapsedTime*5);
         rotateUpperLip.setTransform(Mat4Transform.rotateAroundX(rotateAngle));
         rotateUpperLip.update();
@@ -293,7 +294,7 @@ class Robot {
     }
 
     void updatePupils() {
-        double elapsedTime = getSeconds()- appStartTime;
+        double elapsedTime = getSeconds();
         float x = 0.03f * (float)(Math.cos(Math.toRadians(elapsedTime*200)));
         float y = 0.03f * (float)(Math.sin(Math.toRadians(elapsedTime*200)));
         rotateRightPupil.setTransform(Mat4Transform.translate(x,0.1f + y,0.2f));
@@ -303,7 +304,6 @@ class Robot {
     }
 
     // TIMING VAR
-    private double appStartTime;
     private boolean keepPose;
     private double time2;
     private double timeDelay = 0;

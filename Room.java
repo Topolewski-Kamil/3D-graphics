@@ -2,8 +2,8 @@ import com.jogamp.opengl.GL3;
 import gmaths.Mat4;
 import gmaths.Mat4Transform;
 import gmaths.Vec3;
-
 import java.time.LocalTime;
+
 /**
  * @author Kamil Topolewski
  */
