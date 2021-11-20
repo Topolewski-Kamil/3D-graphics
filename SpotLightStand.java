@@ -2,7 +2,9 @@ import com.jogamp.opengl.GL3;
 import gmaths.Mat4;
 import gmaths.Mat4Transform;
 import gmaths.Vec3;
-
+/**
+ * @author Kamil Topolewski
+ */
 class SpotLightStand {
 
     private GL3 gl;
@@ -20,6 +22,10 @@ class SpotLightStand {
     }
 
     private void buildSpotLightStand() {
+        int[] woodBox = TextureLibrary.loadTexture(gl, "textures/wooden_box.jpg");
+        int[] woodBoxSpecular = TextureLibrary.loadTexture(gl, "textures/wooden_box_specular.jpg");
+        int[] white = TextureLibrary.loadTexture(gl, "textures/white.jpg");
+
         Mat4 modelMatrix = Mat4Transform.translate(0, 0, 0);
         Mat4 initTranslate = Mat4Transform.translate(0, 0.5f, 0);
 
@@ -30,10 +36,6 @@ class SpotLightStand {
         Mesh sphere = new Mesh(gl, Sphere.vertices.clone(), Sphere.indices.clone());
 
         Shader shaderCube = new Shader(gl, "vs_cube_04.txt", "fs_cube_04.txt");
-
-        int[] woodBox = TextureLibrary.loadTexture(gl, "textures/wooden_box.jpg");
-        int[] woodBoxSpecular = TextureLibrary.loadTexture(gl, "textures/wooden_box_specular.jpg");
-        int[] white = TextureLibrary.loadTexture(gl, "textures/white.jpg");
 
         // light bulb
         lightTop = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, shiny, modelMatrix, sphere, white);

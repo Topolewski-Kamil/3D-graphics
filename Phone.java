@@ -2,7 +2,9 @@ import com.jogamp.opengl.GL3;
 import gmaths.Mat4;
 import gmaths.Mat4Transform;
 import gmaths.Vec3;
-
+/**
+ * @author Kamil Topolewski
+ */
 class Phone {
 
     private GL3 gl;
@@ -21,14 +23,17 @@ class Phone {
     }
 
     private void buildPhone() {
-        Shader shaderCube = new Shader(gl, "vs_cube_04.txt", "fs_cube_04.txt");
-        Mesh cube = new Mesh(gl, Cube.vertices.clone(), Cube.indices.clone());
-        Mat4 initTranslate = Mat4Transform.translate(0, 0.5f, 0);
         int[] woodBox = TextureLibrary.loadTexture(gl, "textures/wooden_box.jpg");
         int[] woodBoxSpecular = TextureLibrary.loadTexture(gl, "textures/wooden_box_specular.jpg");
         int[] phoneScreen = TextureLibrary.loadTexture(gl, "textures/phone.jpg");
+
         Material matt = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 32.0f);
         Material shiny = new Material(new Vec3(1.0f, 1.0f, 1.0f), new Vec3(1.0f, 1.0f, 1.0f), new Vec3(1.0f, 1.0f, 1.0f), 32.0f);
+
+        Shader shaderCube = new Shader(gl, "vs_cube_04.txt", "fs_cube_04.txt");
+        Mesh cube = new Mesh(gl, Cube.vertices.clone(), Cube.indices.clone());
+        Mat4 initTranslate = Mat4Transform.translate(0, 0.5f, 0);
+
         Mesh phone = new Mesh(gl, Cube2.vertices.clone(), Cube2.indices.clone());
 
         // stand phone

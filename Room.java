@@ -4,7 +4,9 @@ import gmaths.Mat4Transform;
 import gmaths.Vec3;
 
 import java.time.LocalTime;
-
+/**
+ * @author Kamil Topolewski
+ */
 class Room {
 
     Model floor, wallBack, wallLeft, outside;

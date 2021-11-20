@@ -2,7 +2,9 @@ import com.jogamp.opengl.GL3;
 import gmaths.Mat4;
 import gmaths.Mat4Transform;
 import gmaths.Vec3;
-
+/**
+ * @author Kamil Topolewski
+ */
 class Robot {
 
     SGNode robotRoot;
@@ -23,15 +25,6 @@ class Robot {
     }
 
     private void buildRobot(){
-        Mat4 initTranslate = Mat4Transform.translate(0, 0.5f, 0);
-        Shader shaderCube = new Shader(gl, "vs_cube_04.txt", "fs_cube_04.txt");
-        Material matt = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 32.0f);
-        Mesh sphere = new Mesh(gl, Sphere.vertices.clone(), Sphere.indices.clone());
-        int[] yellow = TextureLibrary.loadTexture(gl, "textures/yellow.jpg");
-        int[] black = TextureLibrary.loadTexture(gl, "textures/black.jpg");
-        int[] white = TextureLibrary.loadTexture(gl, "textures/white.jpg");
-        int[] orange = TextureLibrary.loadTexture(gl, "textures/orange.jpg");
-
         float bodyX = 1f;
         float bodyY = 2f;
         float headScale = 1.5f;
@@ -40,6 +33,16 @@ class Robot {
         float neckScale = 0.3f;
         float legScale = 0.5f;
         float mouthScale = 0.5f;
+
+        int[] yellow = TextureLibrary.loadTexture(gl, "textures/yellow.jpg");
+        int[] black = TextureLibrary.loadTexture(gl, "textures/black.jpg");
+        int[] white = TextureLibrary.loadTexture(gl, "textures/white.jpg");
+        int[] orange = TextureLibrary.loadTexture(gl, "textures/orange.jpg");
+
+        Material matt = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 32.0f);
+        Shader shaderCube = new Shader(gl, "vs_cube_04.txt", "fs_cube_04.txt");
+        Mesh sphere = new Mesh(gl, Sphere.vertices.clone(), Sphere.indices.clone());
+        Mat4 initTranslate = Mat4Transform.translate(0, 0.5f, 0);
 
         /* robot elements */
         sphereYellow = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, matt, null, sphere, yellow);
