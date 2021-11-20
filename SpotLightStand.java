@@ -61,7 +61,8 @@ class SpotLightStand {
         lampBtm = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, matt, modelMatrix, cube, woodBox, woodBoxSpecular);
     }
 
-    Mat4 getMforLamp() {
+    /* Model matrix for swinging lamp */
+    Mat4 getMforSwingingLamp() {
         double elapsedTime = Museum_GLEventListener.getSeconds() - Museum_GLEventListener.appStartTime;
         float sizeX = 0.3f;
         float sizeY = 0.5f;
@@ -75,6 +76,7 @@ class SpotLightStand {
         return modelMatrix;
     }
 
+    /* Model matrix for case for swinging lamp */
     Mat4 getMforLampCase() {
         double elapsedTime = Museum_GLEventListener.getSeconds() - Museum_GLEventListener.appStartTime;
         float sizeX = 0.37f;
@@ -88,5 +90,4 @@ class SpotLightStand {
         modelMatrix = Mat4.multiply(Mat4Transform.translate(6.5f, 5.1f, 0), modelMatrix);
         return modelMatrix;
     }
-
 }

@@ -59,6 +59,7 @@ class Room {
 
     }
 
+    /* Model matrix for back wall */
     private Mat4 getMforBackWall() {
         float sizeX = 18f;
         float sizeZ = 12f;
@@ -69,17 +70,7 @@ class Room {
         return modelMatrix;
     }
 
-    private Mat4 getMforOutside() {
-        float sizeX = 18f;
-        float sizeZ = 12f;
-        Mat4 modelMatrix = new Mat4(1);
-        modelMatrix = Mat4.multiply(Mat4Transform.scale(sizeX, 1f, sizeZ), modelMatrix);
-        modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundY(90), modelMatrix);
-        modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundZ(-90), modelMatrix);
-        modelMatrix = Mat4.multiply(Mat4Transform.translate(-11f, sizeZ / 2, 0), modelMatrix);
-        return modelMatrix;
-    }
-
+    /* Model matrix for wall with window */
     Mat4 getMforLeftWall(int i, int j) {
         float sizeX = 6f;
         float sizeZ = 4f;
@@ -88,6 +79,18 @@ class Room {
         modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundY(90), modelMatrix);
         modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundZ(-90), modelMatrix);
         modelMatrix = Mat4.multiply(Mat4Transform.translate(-9f, sizeZ * j - 2f, i * sizeX - 2 * sizeX), modelMatrix);
+        return modelMatrix;
+    }
+
+    /* Model matrix for outside wall (clouds) */
+    private Mat4 getMforOutside() {
+        float sizeX = 18f;
+        float sizeZ = 12f;
+        Mat4 modelMatrix = new Mat4(1);
+        modelMatrix = Mat4.multiply(Mat4Transform.scale(sizeX, 1f, sizeZ), modelMatrix);
+        modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundY(90), modelMatrix);
+        modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundZ(-90), modelMatrix);
+        modelMatrix = Mat4.multiply(Mat4Transform.translate(-11f, sizeZ / 2, 0), modelMatrix);
         return modelMatrix;
     }
 }

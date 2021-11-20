@@ -9,12 +9,11 @@ import gmaths.Vec3;
 class Robot {
 
     SGNode robotRoot;
-    private TransformNode rotateUpperLip, rotateLowerLip, robotMoveTranslate, leanBody, turnHead, rotateRightPupil, rotateLeftPupil;
     Model sphereYellow, sphereWhite, sphereBlack,sphereOrange;
+    private TransformNode rotateUpperLip, rotateLowerLip, robotMoveTranslate, leanBody, turnHead, rotateRightPupil, rotateLeftPupil;
     private GL3 gl;
     private Camera camera;
     private Light swingingLight, generalLight1, generalLight2;
-
 
     Robot(GL3 gl, Camera camera, Light swingingLight, Light generalLight1, Light generalLight2){
         this.gl = gl;
@@ -26,6 +25,7 @@ class Robot {
     }
 
     private void buildRobot(){
+
         float bodyX = 1f;
         float bodyY = 2f;
         float headScale = 1.5f;
@@ -134,67 +134,64 @@ class Robot {
 
         /* robot scene graph */
         robotRoot.addChild(robotMoveTranslate);
-        robotMoveTranslate.addChild(robotTranslate);
-        robotTranslate.addChild(leanBody);
-        leanBody.addChild(body);
-        body.addChild(bodyTransform);
-        bodyTransform.addChild(bodyShape);
-        body.addChild(translateOnTopBody);
-        translateOnTopBody.addChild(neck);
-        neck.addChild(neckTransform);
-        neckTransform.addChild(neckShape);
-        body.addChild(translateOnTopNeck);
-        translateOnTopNeck.addChild(turnHead);
-        turnHead.addChild(head);
-        head.addChild(headTransform);
-        headTransform.addChild(headShape);
-        head.addChild(translateLeftEyeOnHead);
-        translateLeftEyeOnHead.addChild(eyeLeft);
-        eyeLeft.addChild(eyeLeftTransform);
-        eyeLeftTransform.addChild(eyeLeftShape);
-        eyeLeft.addChild(pupilLeft);
-        pupilLeft.addChild(rotateLeftPupil);
-        rotateLeftPupil.addChild(pupilLeftTransform);
-        pupilLeftTransform.addChild(pupilLeftShape);
-        head.addChild(translateRightEyeOnHead);
-        translateRightEyeOnHead.addChild(eyeRight);
-        eyeRight.addChild(eyeRightTransform);
-        eyeRightTransform.addChild(eyeRightShape);
-        eyeRight.addChild(pupilRight);
-        pupilRight.addChild(rotateRightPupil);
-        rotateRightPupil.addChild(pupilRightTransform);
-        pupilRightTransform.addChild(pupilRightShape);
-        head.addChild(upperMouth);
-        upperMouth.addChild(translateMouth);
-        translateMouth.addChild(rotateUpperLip);
-        rotateUpperLip.addChild(upperMouthTransform);
-        upperMouthTransform.addChild(upperMouthShape);
-        head.addChild(lowerMouth);
-        lowerMouth.addChild(translateMouth);
-        translateMouth.addChild(rotateLowerLip);
-        rotateLowerLip.addChild(lowerMouthTransform);
-        lowerMouthTransform.addChild(lowerMouthShape);
-        robotTranslate.addChild(leg);
-        leg.addChild(translateLegUnderBody);
-        translateLegUnderBody.addChild(legTransform);
-        legTransform.addChild(legShape);
+            robotMoveTranslate.addChild(robotTranslate);
+                robotTranslate.addChild(leanBody);
+                    leanBody.addChild(body);
+                        body.addChild(bodyTransform);
+                            bodyTransform.addChild(bodyShape);
+                        body.addChild(translateOnTopBody);
+                            translateOnTopBody.addChild(neck);
+                                neck.addChild(neckTransform);
+                                    neckTransform.addChild(neckShape);
+                        body.addChild(translateOnTopNeck);
+                            translateOnTopNeck.addChild(turnHead);
+                                turnHead.addChild(head);
+                                    head.addChild(headTransform);
+                                        headTransform.addChild(headShape);
+                                    head.addChild(translateLeftEyeOnHead);
+                                        translateLeftEyeOnHead.addChild(eyeLeft);
+                                            eyeLeft.addChild(eyeLeftTransform);
+                                                eyeLeftTransform.addChild(eyeLeftShape);
+                                            eyeLeft.addChild(pupilLeft);
+                                                pupilLeft.addChild(rotateLeftPupil);
+                                                    rotateLeftPupil.addChild(pupilLeftTransform);
+                                                        pupilLeftTransform.addChild(pupilLeftShape);
+                                    head.addChild(translateRightEyeOnHead);
+                                        translateRightEyeOnHead.addChild(eyeRight);
+                                            eyeRight.addChild(eyeRightTransform);
+                                                eyeRightTransform.addChild(eyeRightShape);
+                                            eyeRight.addChild(pupilRight);
+                                                pupilRight.addChild(rotateRightPupil);
+                                                    rotateRightPupil.addChild(pupilRightTransform);
+                                                        pupilRightTransform.addChild(pupilRightShape);
+                                    head.addChild(upperMouth);
+                                        upperMouth.addChild(translateMouth);
+                                            translateMouth.addChild(rotateUpperLip);
+                                                rotateUpperLip.addChild(upperMouthTransform);
+                                                    upperMouthTransform.addChild(upperMouthShape);
+                                    head.addChild(lowerMouth);
+                                        lowerMouth.addChild(translateMouth);
+                                            translateMouth.addChild(rotateLowerLip);
+                                                rotateLowerLip.addChild(lowerMouthTransform);
+                                                    lowerMouthTransform.addChild(lowerMouthShape);
+                robotTranslate.addChild(leg);
+                leg.addChild(translateLegUnderBody);
+                translateLegUnderBody.addChild(legTransform);
+                legTransform.addChild(legShape);
 
         robotRoot.update();  // IMPORTANT - don't forget this
 //        robotRoot.print(0, false);
 //        System.exit(0);
     }
 
-    /*
-  Animates robot to go around in circle and stops at poses 1-5
- */
+    /* Animates robot to go around in circle and stops at poses 1-5 */
     void animateRobot() {
         animationTime = getSeconds() - timeDelay; // keep a delay on animation timer
 
         // dont change the pose until 2 seconds elapse
         if (animationTime - time2 >= 2.1)
             keepPose = false;
-        else
-            return;
+        else return;
 
         float x = 5.0f*(float)(Math.sin(Math.toRadians(animationTime *50)));
         float z = 5.0f*(float)(Math.cos(Math.toRadians(animationTime *50)));
@@ -230,6 +227,7 @@ class Robot {
         turnHead.update();
     }
 
+    /* Reset head and body transforms */
     private void resetPose(){
         headRotate(0);
         leanBody.setTransform(Mat4Transform.rotateAroundX(0));
@@ -284,6 +282,7 @@ class Robot {
         headRotate(-30);
     }
 
+    /* Move lips up and down */
     void updateMouth() {
         double elapsedTime = getSeconds();
         float rotateAngle = 10f * (float)Math.sin(elapsedTime*5);
@@ -293,6 +292,7 @@ class Robot {
         rotateLowerLip.update();
     }
 
+    /* Make pupils spin */
     void updatePupils() {
         double elapsedTime = getSeconds();
         float x = 0.03f * (float)(Math.cos(Math.toRadians(elapsedTime*200)));
@@ -303,7 +303,7 @@ class Robot {
         rotateLeftPupil.update();
     }
 
-    // TIMING VAR
+    /* Timing vars */
     private boolean keepPose;
     private double time2;
     private double timeDelay = 0;

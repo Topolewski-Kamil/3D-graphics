@@ -155,7 +155,7 @@ public class Museum_GLEventListener implements GLEventListener {
         phone.standPhone.render(gl);
         phone.mobilePhone.render(gl);
         lightStand.lightTop.render(gl);
-        lightStand.lightTop.setModelMatrix(lightStand.getMforLamp());
+        lightStand.lightTop.setModelMatrix(lightStand.getMforSwingingLamp());
         lightStand.lightCase.render(gl);
         lightStand.lightCase.setModelMatrix(lightStand.getMforLampCase());
         lightStand.lampTop.render(gl);

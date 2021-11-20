@@ -44,5 +44,4 @@ class Egg {
         modelMatrix = Mat4.multiply(Mat4Transform.translate(0, 1, 0), modelMatrix);
         eggFig = new Model(gl, camera, swingingLight, generalLight1, generalLight2, shaderCube, matt, modelMatrix, sphere, eggBlue,eggBlueSpecular);
     }
-
 }
